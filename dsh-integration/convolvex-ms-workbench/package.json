@@ -1,6 +1,6 @@
 {
   "name": "dsh-convolvex-ms-workbench",
-  "version": "1.1.1",
+  "version": "1.1.0",
   "private": false,
   "type": "module",
   "description": "Convolvex-MS mass-spectrometry workbench in the DeepSeek Harness sidebar, reusing the original web UI and binding every workspace to its own .convolvex-ms data directory.",
