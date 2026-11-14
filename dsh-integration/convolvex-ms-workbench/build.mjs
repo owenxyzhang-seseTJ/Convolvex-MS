@@ -244,14 +244,16 @@ const toolbarCss = `
 .cvx-dot[data-state="ready"] { background:var(--dsw-alias-state-success-primary, #3f9b6d); }
 .cvx-dot[data-state="error"] { background:var(--dsw-alias-state-error-primary, #c14b55); }
 .cvx-tabs { position:relative; display:flex; align-items:center; gap:4px; padding:0; border-radius:8px; background:transparent; }
-.cvx-tab { position:relative; z-index:1; height:32px; padding:0 13px; border:1px solid transparent; border-radius:7px; background:transparent; color:var(--dsw-alias-label-secondary); font-size:14px; cursor:pointer; white-space:nowrap; }
-.cvx-tab:hover:not([data-active="true"]) { color:var(--dsw-alias-label-primary); border-color:var(--dsw-alias-border-l1); }
+.cvx-tab { position:relative; z-index:1; height:32px; padding:0 13px; border:0; border-radius:7px; background:transparent; color:var(--dsw-alias-label-secondary); font-size:14px; cursor:pointer; white-space:nowrap; }
+.cvx-tab:hover:not([data-active="true"]) { color:var(--dsw-alias-label-primary); }
 .cvx-tab:focus, .cvx-tab:focus-visible { outline:none; }
-.cvx-tab[data-active="true"] { color:var(--dsw-alias-label-primary); background:transparent; font-weight:600; box-shadow:none; }
+.cvx-tab[data-active="true"] { color:var(--dsw-alias-label-primary); background:transparent; font-weight:600; }
 .cvx-tab-indicator {
-  position:absolute; z-index:0; top:0; left:0; height:32px; border:1px solid var(--dsw-alias-border-l2); border-radius:7px;
-  background:transparent;
-  box-shadow:none;
+  position:absolute; z-index:0; top:0; left:0; height:32px; border:0; border-radius:8px;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--dsw-alias-brand-primary) 9%, var(--dsw-alias-bg-layer-1)),
+    color-mix(in srgb, var(--dsw-alias-brand-primary) 3%, var(--dsw-alias-bg-layer-1)));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dsw-alias-brand-primary) 22%, var(--dsw-alias-border-l1)), 0 1px 2px rgb(0 0 0 / .05);
   pointer-events:none;
   transition: transform .34s var(--cvx-ease), width .34s var(--cvx-ease), opacity .2s ease;
 }
