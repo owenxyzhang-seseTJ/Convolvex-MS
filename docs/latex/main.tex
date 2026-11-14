@@ -1,0 +1,110 @@
+\documentclass[UTF8,zihao=-4,a4paper,oneside,openany,fontset=none]{ctexbook}
+\usepackage[left=24mm,right=23mm,top=24mm,bottom=24mm,headheight=15pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{Liberation Serif}
+\setsansfont{Arimo}
+\setmonofont{DejaVu Sans Mono}[Scale=.82]
+\setCJKmainfont{Noto Serif CJK SC}[ItalicFont={Noto Serif CJK SC}]
+\setCJKsansfont{Noto Sans CJK SC}
+\setCJKmonofont{Noto Sans Mono CJK SC}
+\newCJKfontfamily\heiti{Noto Sans CJK SC}
+\IfFontExistsTF{Arial}{\newfontfamily\figfont{Arial}}{\newfontfamily\figfont{Arimo}}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{graphicx,booktabs,longtable,array,tabularx,multirow}
+\usepackage{float,placeins,caption,subcaption}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit}
+\usepackage{listings,xcolor}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[hidelinks,unicode]{hyperref}
+\usepackage{xurl,fancyhdr,enumitem}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage{microtype}
+\hypersetup{pdftitle={质谱与DEMS信号解析的数学方法及智能体接口},pdfauthor={Convolvex-MS},pdfsubject={MCP, inverse problems, mass spectrometry}}
+\ctexset{chapter={format=\centering\heiti\Large,beforeskip=12pt,afterskip=22pt},section={format=\heiti\large},subsection={format=\heiti\normalsize}}
+\linespread{1.12}
+\setlength{\parskip}{.10em}
+\setlength{\parindent}{2em}
+\setlength{\emergencystretch}{2em}
+\pagestyle{fancy}\fancyhf{}\fancyhead[L]{\small 质谱与 DEMS 信号解析}\fancyhead[R]{\small Convolvex--MS 1.1}\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{.35pt}
+\captionsetup{font=small,labelfont=bf,labelsep=quad}
+\numberwithin{equation}{chapter}
+\theoremstyle{definition}\newtheorem{definition}{定义}[chapter]\newtheorem{example}{例}[chapter]
+\theoremstyle{definition}\newtheorem{proposition}{命题}[chapter]
+\renewcommand{\proofname}{证明}
+\newcommand{\R}{\mathbb{R}}\newcommand{\Aop}{\mathcal{A}}\newcommand{\prox}{\operatorname{prox}}
+\newcommand{\diag}{\operatorname{diag}}\newcommand{\argmin}{\operatorname*{arg\,min}}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\fig}[3]{\begin{figure}[htbp]\centering\includegraphics[width=#2\linewidth]{figures/#1.pdf}\caption{#3}\label{fig:#1}\end{figure}}
+\lstset{basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible,keepspaces=true,showstringspaces=false,frame=single,rulecolor=\color{black!25},framesep=5pt,aboveskip=10pt,belowskip=10pt}
+\SetAlgorithmName{算法}{算法}{算法目录}\SetKwInput{KwIn}{输入}\SetKwInput{KwOut}{输出}
+\graphicspath{{figures/}}
+\input{metrics.tex}
+\begin{document}
+\hypersetup{pageanchor=false}
+\begin{titlepage}\centering
+\vspace*{25mm}
+{\heiti\LARGE 质谱与 DEMS 信号解析\par}
+\vspace{9mm}{\heiti\LARGE 的数学方法及智能体接口\par}
+\vspace{19mm}{\Large Convolvex--MS 1.1.0\par}
+\vspace{10mm}{\large 技术报告\par}
+\vfill
+\begin{minipage}{.78\textwidth}\normalsize
+从观测方程、传输过程与离散算子出发，建立质谱分解、正则化反卷积、背景消元与定量审查的统一方法，并给出 MCP 服务及可审计智能体工作流的实现与验收记录。
+\end{minipage}
+\vfill{\large 2026 年 11 月 14 日\par}\vspace{12mm}
+\end{titlepage}
+\frontmatter
+\hypersetup{pageanchor=true}
+\chapter*{编写说明}\addcontentsline{toc}{chapter}{编写说明}
+本报告以实际交付的 Convolvex--MS 1.1.0 源码为对象。讨论范围限于线性质谱混合、质谱质量轴线形、DEMS 时间响应、背景与同位素诊断、定量条件及智能体调用。通用图像去模糊、三维图像恢复与前端设计均不列入本报告。
+
+二维数组不等于二维图像。一个以质荷比为行、以时间为列的观测矩阵正是质谱数据的常见表示；本报告保留此类矩阵和热图，但不沿离散质量通道任意施加图像平滑。通用数学内核中的兼容代码仍可保留，其存在不构成质谱分析需要图像恢复的论据。
+
+正文按观测量、物理模型、离散化、反问题、数值算法、定量审查、接口、工作流和实验验收的顺序展开。命题中的条件与结论均有明确边界。程序计算出的“收敛解”、化学物种的“可识别性”和实验标定后的“绝对量”分别对待。
+
+本版全部演示与基准使用公开构造的合成数据，不使用用户原始实验数据，也不把构造的响应矩阵称为 NIST 标准谱。测试通过不能替代标准品回收、空白和重复实验。关于算法优化，分通道投影、批量 FFT 与尺度相容停止判据属于本项目的实现改进；变量投影、FISTA 和原始--对偶方法本身不是本项目首创。
+
+绘图配置的默认字体为 Arial。当前构建环境未安装 Arial，故本次 PDF 图中文字明确采用 Arimo；该事实记录于 \code{simulations/font_receipt.json}。默认严格绘图模式遇到缺少 Arial 会报错，不会静默替换。安装本机合法字体后可由相同脚本重新生成精确 Arial 版本；交付包不附带任何字体文件。
+
+本版实现 MCP 的 \code{2026-07-28} 核心调用路径，以及 \code{2025-11-25}、\code{2025-06-18} 兼容路径。协议测试覆盖实际本地子进程与 HTTP 测试客户端；官方 SDK 与第三方宿主尚未在本环境验证。本报告不宣称获得协议认证。
+\tableofcontents
+\chapter*{符号与量纲}\addcontentsline{toc}{chapter}{符号与量纲}
+\begin{longtable}{p{.16\textwidth}p{.52\textwidth}p{.22\textwidth}}
+\toprule 符号 & 含义 & 单位或维数\\\midrule\endhead
+$m,j,n$ & 质量通道、候选组分、时间样点的指标 & 整数\\
+$M,J,N$ & 通道数、组分数、样点数 & 正整数\\
+$t,\Delta t$ & 物理时间、均匀时间步长 & s\\
+$y_m(t)$ & 质谱观测信号 & A、counts 或声明单位\\
+$r_j(t)$ & 电极侧组分生成速率 & mol\,s$^{-1}$\\
+$\kappa_j$ & 包括收集效率的有效灵敏度 & C\,mol$^{-1}$\\
+$x_j(t)=\kappa_jr_j(t)$ & 参考通道等效源信号 & A\\
+$h_j(t)$ & 单位积分的因果传输响应密度 & s$^{-1}$\\
+$h_{j,k}^{\mathrm d}$ & 离散 FIR 核权重 & 无量纲\\
+$S_{mj}$ & 相对碎片响应；参考通道系数为 1 & 无量纲\\
+$Y,X$ & 观测、源信号矩阵 & $M\times N$、$J\times N$\\
+$B,\beta_m$ & 时间背景基、通道背景系数 & $N\times p$、$p$\\
+$W_m$ & 通道内的逆标准差与掩码算子 & 逆观测单位\\
+$D_t$ & 离散时间差分 & 需区分索引差分与物理导数\\
+$\lambda_1,\lambda_2$ & L1 与 L2 目标函数系数 & 随量纲定义而定\\
+$F$ & 法拉第常数 & $96485.33212331001$ C\,mol$^{-1}$\\
+$Q^-,Q^+$ & 阴极、阳极电荷的正值大小 & C\\
+\bottomrule
+\end{longtable}
+\mainmatter
+\include{chapters/01_observation}
+\include{chapters/02_spectra}
+\include{chapters/03_transport}
+\include{chapters/04_operators}
+\include{chapters/05_inverse}
+\include{chapters/06_background}
+\include{chapters/07_quantification}
+\include{chapters/08_mcp}
+\include{chapters/09_agent}
+\include{chapters/10_validation}
+\appendix
+\include{chapters/11_reproduction}
+\backmatter
+\bibliographystyle{unsrtnat}\bibliography{references}
+\end{document}

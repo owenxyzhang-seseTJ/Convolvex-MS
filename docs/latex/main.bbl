@@ -1,0 +1,136 @@
+\begin{thebibliography}{17}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Colby et~al.(2021)Colby, Chang, Bade, et~al.]{deimos}
+Sean~M. Colby, Christine~H. Chang, Jessica~L. Bade, et~al.
+\newblock {DEIMoS}: An open-source tool for processing high-dimensional mass
+  spectrometry data.
+\newblock arXiv:2112.03466, 2021.
+\newblock URL \url{https://arxiv.org/abs/2112.03466}.
+
+\bibitem[Linstrom()]{nistweb}
+Peter~J. Linstrom.
+\newblock A guide to the nist chemistry webbook, srd 69.
+\newblock National Institute of Standards and Technology.
+\newblock URL \url{https://webbook.nist.gov/chemistry/guide/}.
+\newblock Accessed 2026-11-14.
+
+\bibitem[{National Institute of Standards and
+  Technology}({\natexlab{a}})]{nistC}
+{National Institute of Standards and Technology}.
+\newblock Atomic weights and isotopic compositions for carbon, {\natexlab{a}}.
+\newblock URL
+  \url{https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=C}.
+\newblock Representative composition; accessed 2026-11-14.
+
+\bibitem[{National Institute of Standards and
+  Technology}({\natexlab{b}})]{nistO}
+{National Institute of Standards and Technology}.
+\newblock Atomic weights and isotopic compositions for oxygen, {\natexlab{b}}.
+\newblock URL
+  \url{https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=O}.
+\newblock Representative composition; accessed 2026-11-14.
+
+\bibitem[{Commission on Isotopic Abundances and Atomic Weights}()]{ciaaw}
+{Commission on Isotopic Abundances and Atomic Weights}.
+\newblock Isotopic abundances of the elements.
+\newblock URL \url{https://ciaaw.org/isotopic-abundances.htm}.
+\newblock Accessed 2026-11-14.
+
+\bibitem[Krempl et~al.(2021)Krempl, Hochfilzer, Scott, Kibsgaard, Vesborg,
+  Hansen, and Chorkendorff]{krempl2021}
+Kevin Krempl, Degenhart Hochfilzer, Soren~B. Scott, Jakob Kibsgaard, Peter
+  C.~K. Vesborg, Ole Hansen, and Ib~Chorkendorff.
+\newblock Dynamic interfacial reaction rates from electrochemistry--mass
+  spectrometry.
+\newblock \emph{Analytical Chemistry}, 93\penalty0 (18):\penalty0 7022--7028,
+  2021.
+\newblock \doi{10.1021/acs.analchem.1c00110}.
+
+\bibitem[Fong and Saunders(2011)]{lsmr}
+David Chin-Lung Fong and Michael Saunders.
+\newblock Lsmr: An iterative algorithm for sparse least-squares problems.
+\newblock \emph{SIAM Journal on Scientific Computing}, 33\penalty0
+  (5):\penalty0 2950--2971, 2011.
+\newblock \doi{10.1137/10079687X}.
+
+\bibitem[Beck and Teboulle(2009)]{fista}
+Amir Beck and Marc Teboulle.
+\newblock A fast iterative shrinkage-thresholding algorithm for linear inverse
+  problems.
+\newblock \emph{SIAM Journal on Imaging Sciences}, 2\penalty0 (1):\penalty0
+  183--202, 2009.
+\newblock \doi{10.1137/080716542}.
+
+\bibitem[Chambolle and Pock(2011)]{pdhg}
+Antonin Chambolle and Thomas Pock.
+\newblock A first-order primal-dual algorithm for convex problems with
+  applications to imaging.
+\newblock \emph{Journal of Mathematical Imaging and Vision}, 40:\penalty0
+  120--145, 2011.
+\newblock \doi{10.1007/s10851-010-0251-1}.
+
+\bibitem[Golub and Pereyra(1973)]{varpro}
+Gene~H. Golub and Victor Pereyra.
+\newblock The differentiation of pseudo-inverses and nonlinear least squares
+  problems whose variables separate.
+\newblock \emph{SIAM Journal on Numerical Analysis}, 10\penalty0 (2):\penalty0
+  413--432, 1973.
+\newblock \doi{10.1137/0710036}.
+
+\bibitem[{Model Context Protocol Contributors}(2026{\natexlab{a}})]{mcpbase}
+{Model Context Protocol Contributors}.
+\newblock {MCP} specification 2026-07-28: Base protocol, 2026{\natexlab{a}}.
+\newblock URL
+  \url{https://modelcontextprotocol.io/specification/2026-07-28/basic/index}.
+\newblock Accessed 2026-11-14.
+
+\bibitem[{Model Context Protocol Contributors}(2026{\natexlab{b}})]{mcptools}
+{Model Context Protocol Contributors}.
+\newblock {MCP} specification 2026-07-28: Tools, 2026{\natexlab{b}}.
+\newblock URL
+  \url{https://modelcontextprotocol.io/specification/2026-07-28/server/tools}.
+\newblock Accessed 2026-11-14.
+
+\bibitem[{Model Context Protocol Contributors}(2026{\natexlab{c}})]{mcpversion}
+{Model Context Protocol Contributors}.
+\newblock {MCP} specification 2026-07-28: Versioning and compatibility,
+  2026{\natexlab{c}}.
+\newblock URL
+  \url{https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning}.
+\newblock Accessed 2026-11-14.
+
+\bibitem[{Model Context Protocol
+  Contributors}(2026{\natexlab{d}})]{mcpdiscover}
+{Model Context Protocol Contributors}.
+\newblock {MCP} specification 2026-07-28: Discovery, 2026{\natexlab{d}}.
+\newblock URL
+  \url{https://modelcontextprotocol.io/specification/2026-07-28/server/discover}.
+\newblock Accessed 2026-11-14.
+
+\bibitem[{Model Context Protocol Contributors}(2026{\natexlab{e}})]{mcpstdio}
+{Model Context Protocol Contributors}.
+\newblock {MCP} specification 2026-07-28: stdio, 2026{\natexlab{e}}.
+\newblock URL
+  \url{https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio}.
+\newblock Accessed 2026-11-14.
+
+\bibitem[{Model Context Protocol Contributors}(2026{\natexlab{f}})]{mcphttp}
+{Model Context Protocol Contributors}.
+\newblock {MCP} specification 2026-07-28: Streamable http, 2026{\natexlab{f}}.
+\newblock URL
+  \url{https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http}.
+\newblock Accessed 2026-11-14.
+
+\bibitem[{Model Context Protocol Contributors}(2025)]{mcplegacy}
+{Model Context Protocol Contributors}.
+\newblock {MCP} specification 2025-11-25: Transports, 2025.
+\newblock URL
+  \url{https://modelcontextprotocol.io/specification/2025-11-25/basic/transports}.
+\newblock Legacy compatibility profile; accessed 2026-11-14.
+
+\end{thebibliography}

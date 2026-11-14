@@ -1,0 +1,84 @@
+\chapter{MCP 服务的实现}
+\section{协议层与科学计算层分离}
+MCP 的作用是让宿主中的 agent 发现并调用工具、读取资源和使用提示模板；它不是新的反卷积算法，也不赋予数值结果以化学真实性\cite{mcpbase,mcptools}。本版采用明确的分层：\code{mcp_server.py} 只负责协议及传输，\code{ms_workspace.py} 负责文件与任务，\code{massspec.py} 负责科学合同与流程，算子和求解器负责数值运算。
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[font=\figfont\small,node distance=8mm,box/.style={draw,rounded corners=2pt,minimum width=103mm,minimum height=9mm,align=center},arr/.style={-Latex,thick}]
+\node[box](host){Agent host / deterministic reference client};
+\node[box,below=of host](mcp){MCP: tools, resources, prompts};
+\node[box,below=of mcp](store){Private workspace: immutable inputs, jobs, hashes};
+\node[box,below=of store](domain){Mass-spectrometry contracts and scientific gates};
+\node[box,below=of domain](math){Forward / adjoint operators and solvers};
+\draw[arr](host)--(mcp);\draw[arr](mcp)--(store);\draw[arr](store)--(domain);\draw[arr](domain)--(math);
+\end{tikzpicture}
+\caption{MCP 与数学内核之间的调用层次。协议层不执行任意用户代码，计算层不依赖语言模型供应商。}
+\end{figure}
+
+实际协议代码不依赖官方 SDK，采用严格 JSON-RPC 编解码和 Pydantic 数据合同。这样可在已有依赖的离线环境运行，但也意味着必须独立验证协议边界。本版提供实际子进程和 HTTP 测试，并附有可选的官方 SDK 兼容测试；后者因环境未安装 SDK 而跳过，不能据此宣称全部宿主兼容。
+
+\section{版本与消息模式}
+所检查的 \code{2026-07-28} 规范采用自包含请求，在 \code{params._meta} 中携带版本和客户端能力；可用 \code{server/discover} 发现服务，完成响应带 \code{resultType="complete"}\cite{mcpversion,mcpdiscover}。本版实现这条路径，同时保留 \code{2025-11-25}、\code{2025-06-18} 的初始化握手兼容路径。两种模式不能混写成同一个假想握手。
+
+现代请求至少含有以下元数据键：
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}
+"_meta": {
+  "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+  "io.modelcontextprotocol/clientCapabilities": {}
+}
+\end{lstlisting}
+\end{minipage}\par
+旧版 stdio 客户端先调用 \code{initialize}，接着发送 \code{notifications/initialized}，再发现和调用工具。所有测试均使用匹配模式；未知现代版本返回明确的版本错误，而不是静默当作旧版解释。
+
+\section{十五个工具}
+\begin{longtable}{p{.39\textwidth}p{.52\textwidth}}
+\toprule 工具 & 责任与返回结果\\\midrule\endhead
+\code{ms_capabilities} & 范围、协议版本、CPU/GPU 状态及资源上限。\\
+\code{ms_import_dataset} & 校验并不可变保存显式数据，返回内容哈希。\\
+\code{ms_import_file} & 只读取工作区 inbox 内已授权 JSON/CSV。\\
+\code{ms_inspect} & 时间、单位、有效点、负值、EC 覆盖和警告。\\
+\code{ms_check_response} & 响应矩阵秩、奇异值与列相干性。\\
+\code{ms_background} & 仅在指定空白段拟合；产生残差子数据集。\\
+\code{ms_submit_analysis} & 提交谱混合或谱--时间反演，返回任务编号。\\
+\code{ms_submit_mass_profile} & 提交一维质量轴线形反演。\\
+\code{ms_get_job} & 查询应用任务状态与进度。\\
+\code{ms_get_result} & 返回收敛、诊断、结果哈希等紧凑摘要。\\
+\code{ms_read_array} & 按行、起点、长度读取不超过 2048 个值。\\
+\code{ms_list_jobs} & 查询当前私有工作区的近期任务。\\
+\code{ms_cancel_job} & 请求协作式取消；需再查询实际终态。\\
+\code{ms_integrate_charge} & 在原始 EC 网格上计算净、阴极与阳极电荷。\\
+\code{ms_quantify} & 严格核验操作者标定后计算条件产量和 FE。\\
+\bottomrule
+\end{longtable}
+工具采用 JSON Schema 输入，禁止未知字段，并返回结构化结果和对应的文本表示。工具执行失败使用 \code{isError=true}；协议格式错误采用 JSON-RPC 错误，不能把两者混淆。工具注解中的只读、幂等性等是调用提示，不是授权机制。
+
+\section{资源与提示模板}
+服务公开数据、分析和质量轴请求三种 schema，以及工作流和限制，共五个静态资源；另有按数据集和任务编号读取审计摘要的资源模板。一个 \code{analyze_mass_spectrometry} 提示模板要求调用者保留单位、原始时间与负残差，限制参数搜索，并分开数值与实验结论。
+
+提示模板不是强制安全边界。真正的单位校验、路径限制、资源上限与定量拒绝逻辑在服务端执行，即使 agent 忽略提示也不应绕过这些检查。仓库中的 \code{SKILL.md} 是可供宿主采用的工作说明，不代表本次对话已在某个外部 agent 中自动安装该 skill。
+
+\section{任务存储与上下文控制}
+数值任务采用应用层队列。状态为
+\begin{equation*}
+\texttt{queued}\to\texttt{running}\to
+\{\texttt{completed},\texttt{failed},\texttt{cancelled}\}.
+\end{equation*}
+进程重启后，未结束记录标为 \code{interrupted}，不伪装成已恢复执行。\code{completed} 只表示计算返回；摘要内的 \code{converged} 才表示求解器停止条件。应用任务没有实现 MCP 可选 Tasks 扩展，也不能以任务编号冒充该扩展的句柄。
+
+规范化数据与请求分别计算 SHA-256；相同请求可以复用已存在的任务。原始 JSON、结果摘要和 NPZ 数组分开保存，读取结果时验证数组校验和。写文件采用临时文件、同步和原子替换。SQLite 保存状态，单进程锁避免两个服务同时使用同一工作区。
+
+大数组不会默认塞入工具返回。agent 先读取摘要，再根据需要调用 \code{ms_read_array} 取某一组分或通道的片段。这样控制上下文长度而不通过降采样悄悄改变科学结果。计算仍使用完整导入数组；预览不是计算输入。
+
+\section{传输方式}
+\subsection{stdio}
+客户端启动本地子进程，双方使用 UTF-8 换行分隔的 JSON-RPC 消息。标准输出只含协议消息，日志写入标准错误\cite{mcpstdio}。本版测试实际启动 Python 子进程，而不是只直接调用内部函数。
+
+\subsection{Streamable HTTP}
+本版还提供单一 \code{/mcp} 端点，使用 POST 和 JSON 响应，不提供 GET SSE 长连接。不存在会话状态的 HTTP 模式可处理相互独立的请求。现代协议要求镜像版本、方法和必要名称的 HTTP 头与消息体一致，本版检查这些字段及编码\cite{mcphttp}；旧版本按旧握手与版本头路径处理\cite{mcplegacy}。
+
+HTTP 模式只允许本机地址绑定，要求至少 32 字符的预共享令牌，并检查 Host、Origin、内容类型、Accept 和消息大小。它不是可直接暴露到公网的多用户服务，也没有实现 OAuth 授权发现。网络代理部署需要另行审查认证、TLS、权限、超时和配额。
+
+\section{安全范围}
+服务只读取 \code{inbox} 内的相对路径，拒绝目录穿越、符号链接、任意 URL、超大输入和重复 JSON 键；没有任意 shell、Python 执行或文件删除工具。数据文本始终作为数据，不作为新增系统指令。
+
+默认上限包括一百万个观测值、128 个通道、32 个组分、5000 次迭代、两条工作线程和有界队列。资源上限减小意外负载，不构成针对恶意本地用户的强隔离。拥有进程权限的人仍能读写同一用户可访问的文件；生产隔离应依靠操作系统账户、容器和权限设计。

@@ -1,0 +1,93 @@
+{
+  "seed": 20261114,
+  "all_data_synthetic": true,
+  "response_source": "constructed coefficients, not NIST",
+  "experiments": {
+    "joint": {
+      "rmse": 0.01063205758508812,
+      "naive_rmse": 0.12515209579078268,
+      "converged": true,
+      "iterations": 100,
+      "naive_converged": true,
+      "relative_residual": 0.01668569959716499,
+      "adjoint_error": 5.187959313931082e-15,
+      "response_diagnostics": {
+        "rank": 3,
+        "species": 3,
+        "channels": 7,
+        "full_column_rank": true,
+        "normalized_condition": 1.4052466810361297,
+        "normalized_singular_values": [
+          1.154639516845505,
+          0.9958298721907302,
+          0.8216632228543357
+        ],
+        "column_norms": [
+          1.0008496390567365,
+          1.0171651783265094,
+          1.1131037687475505
+        ],
+        "maximum_coherence": 0.32211327692714353,
+        "near_collinear_pairs": [],
+        "scope": "spectral matrix only; rank deficiency is a warning, not a complete joint temporal identifiability test"
+      },
+      "stationarity": 9.910913826120448e-06
+    },
+    "mass_profile": {
+      "observed_rmse": 0.04448277282302815,
+      "recovered_rmse": 0.003221089552761727,
+      "converged": true,
+      "iterations": 180
+    },
+    "background": {
+      "pressure_assisted_rmse": 0.005080842074754749,
+      "reference_only_rmse": 0.027963882862654534,
+      "blank_windows": [
+        [
+          0.0,
+          45.0
+        ],
+        [
+          205.0,
+          240.0
+        ]
+      ],
+      "negative_residual_count": 210
+    },
+    "ill_conditioned": {
+      "rank": 3,
+      "species": 3,
+      "channels": 7,
+      "full_column_rank": true,
+      "normalized_condition": 193442.21645147528,
+      "normalized_singular_values": [
+        1.417070194711103,
+        0.9959478215287052,
+        7.325547756358412e-06
+      ],
+      "column_norms": [
+        1.0008496390567365,
+        1.0171651783265094,
+        1.0171687638361198
+      ],
+      "maximum_coherence": 0.9999999999463365,
+      "near_collinear_pairs": [
+        [
+          1,
+          2,
+          0.9999999999463365
+        ]
+      ],
+      "scope": "spectral matrix only; rank deficiency is a warning, not a complete joint temporal identifiability test"
+    }
+  },
+  "agent": {
+    "protocol": "2026-07-28",
+    "jobs": 3,
+    "trace_steps": 16,
+    "conclusion_status": "conditional_model_fit_available",
+    "runner": "deterministic MCP reference client; no LLM invoked",
+    "all_converged": true,
+    "quantification_status": "not_attempted_without_operator_calibration"
+  }
+}

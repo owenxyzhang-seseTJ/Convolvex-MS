@@ -1,0 +1,85 @@
+\chapter{正则化反问题与求解方法}
+\section{不适定性与可辨识性}
+由已知 $y$ 求 $x$ 的最小二乘问题为 $\min_x\|Ax-y\|_2^2$。若 $A=U\Sigma V^T$，形式解含有 $1/\sigma_i$；小奇异值对应不稳定方向。谱列近共线、传输低通、有限窗口以及背景混淆均可产生此类方向。
+
+图~\ref{fig:10_identifiability} 比较两个都具有三列的响应矩阵。原矩阵的归一化条件数约为 1.41；把第三列改为第二列加一个极小扰动后，矩阵仍被数值判为满秩，但条件数约为 $1.93\times10^5$。所以“通道数多于组分数”和“满秩”均不足以保证可靠分离。
+\fig{10_identifiability}{.88}{归一化响应矩阵的奇异值。近共线案例说明秩判据与稳定性判据必须同时使用；此图没有把正则化后的结果当作新增实验信息。}
+
+\section{统一目标函数}
+本版主要使用
+\begin{equation}
+\min_{x\in\mathcal C}\ f(x)+\frac{\lambda_2}{2}\|Dx\|_2^2+\lambda_1\|x\|_1,
+\qquad f(x)=\frac12\|W(Ax+b-y)\|_2^2.\label{eq:objective}
+\end{equation}
+$W$ 的非零对角元是逆标准差 $1/\sigma$，而不是逆方差。无效样点对应零权重；本版 MCP 允许每通道一个标准差和逐点掩码，并未提供任意全协方差估计。$\mathcal C$ 可以是整个空间，也可以是非负正交锥。
+
+当不提供标准差时，软件使用相同数值权重。这是一项明确的计算约定，并不表示各通道真实噪声必然相等。\code{l2} 在式~\eqref{eq:objective} 中直接表示 $\lambda_2$，并非 $\lambda_2^2$。
+
+对于异常值，可将标准化残差的平方损失替换为 Huber 损失
+\begin{equation}
+\rho_\delta(u)=\begin{cases}\frac12u^2,&|u|\le\delta,\\
+\delta|u|-\frac12\delta^2,&|u|>\delta.\end{cases}
+\end{equation}
+其导数为 $\operatorname{clip}(u,-\delta,\delta)$，梯度需再次乘回 $W$。该损失降低离群样点影响，但不能修复错误响应矩阵或缺失组分。本版只有 FISTA 路径暴露 Huber。
+
+\section{Tikhonov 与矩阵自由最小二乘}
+在无 L1、无非负约束时，Tikhonov 问题可写成增广最小二乘
+\begin{equation}
+\min_x\left\|\begin{bmatrix}WA\\\sqrt{\lambda_2}D\end{bmatrix}x-
+\begin{bmatrix}W(y-b)\\0\end{bmatrix}\right\|_2^2.
+\end{equation}
+LSMR 只需要增广算子及其伴随的乘法，无须显式形成 $A^TA$\cite{lsmr}。这避免了显式正规方程进一步平方条件数的问题。非负条件需要相应的约束算法，不能把无约束结果截断后声称仍是同一个优化问题的解。
+
+\section{近端梯度与 FISTA}
+把平滑部分记为
+\begin{equation}
+F(x)=f(x)+\frac{\lambda_2}{2}\|Dx\|_2^2,
+\quad \nabla F=A^TW^2(Ax+b-y)+\lambda_2D^TDx.
+\end{equation}
+对于步长 $1/L$，近端更新为
+\begin{equation}
+x^+=\prox_{g/L}\left(v-\frac1L\nabla F(v)\right),
+\qquad g(x)=\lambda_1\|x\|_1+\iota_{\mathcal C}(x).
+\end{equation}
+无非负约束时，近端是软阈值；有非负约束时逐元素为
+\begin{equation}
+\prox_{g/L}(u)=\max(u-\lambda_1/L,0).
+\end{equation}
+FISTA 使用外推点加速，并在适当凸性和步长条件下具有目标函数收敛率保证\cite{fista}。本实现加入回溯和目标值上升时的保护性重启。回溯检验
+\begin{equation}
+F(x^+)\le F(v)+\nabla F(v)^T(x^+-v)+\frac L2\|x^+-v\|_2^2
+\end{equation}
+允许与机器精度和当前目标量级相容的舍入误差，而不是任意固定的绝对余量。
+
+\section{微弱离子流下的数值尺度}
+电流信号可能远小于 1 A。旧实现中的固定绝对容差对 $10^{-9}$ 量级数据过宽，可能使本应被拒绝的步长被接受，或使尚未达到相对精度的结果提前停止。本版把回溯舍入余量写成
+\begin{equation}
+\epsilon_{\rm round}=64\epsilon_{\rm mach}
+\max\{\text{当前比较项的绝对量级},\epsilon_{\rm tiny}\}.
+\end{equation}
+近端梯度映射
+\begin{equation}
+G_L(x)=L\left[x-\prox_{g/L}\left(x-\nabla F(x)/L\right)\right]
+\end{equation}
+用 $\max(\|A^TW^2(y-b)\|_2,\epsilon_{\rm tiny})$ 归一化。该归一化避免无条件使用 $\max(1,\cdot)$ 对小量信号失去意义。
+
+回归测试把同一恒等算子问题缩放到 $1,10^{-6},10^{-9},10^{-12}$ 四个幅值，检查恢复与收敛状态。这个测试验证数值尺度处理，不声称已覆盖任意病态矩阵、任意单位或仪器检出限。实际噪声与模型误差仍可能远大于计算舍入误差。
+\fig{06_stationarity}{.86}{联合质谱模拟中记录的归一化驻点指标。达到给定阈值后停止；迭代上限与真正满足停止条件在结果中分别标记。}
+
+\section{时间总变差}
+对分段平稳的源项，可用
+\begin{equation}
+\min_{x\ge0}\frac12\|W(Ax-y)\|_2^2
++\lambda_{\rm TV}\sum_{j,n}|x_{j,n+1}-x_{j,n}|
++\frac{\lambda_2}{2}\|x\|_2^2.
+\end{equation}
+程序采用原始--对偶方法求解，算法结构建立在已有凸优化方法之上\cite{pdhg}。TV 可以保留跳变，但可能引入阶梯效应；对于平滑物理动力学，平方差分可能更合适。本版不沿组分轴施加 TV，也不使用二维图像去噪例子来证明质谱有效性。
+
+计数探测器在独立计数假设下可以建立 Poisson 似然；模拟电流、压力或扣背景后带符号的数据不满足该形式。通用内核保留 Richardson--Lucy，但本版 MS MCP 目录不将它作为所有质谱数据的默认算法。
+
+\section{参数选择、残差与不确定性}
+正则化参数影响偏差和方差，不能仅以重构残差最小为目标自动选择。残差下降往往伴随噪声拟合增加。参考工作流最多运行三个预先规定的参数分支，保存全部结果，不自动挑选“最像预期产物”的分支。
+
+通用内核包含小规模、无约束 Gaussian 情形的精确 GCV，以及固定前向模型和噪声假设的参数 Bootstrap。它们并未作为新的 MCP 自动定量承诺。非负、TV、数据选择、核误差和标定不确定性都使简单 GCV 或逐点区间的解释需要重新检查。
+
+应同时检查带符号残差、通道残差尺度、时间结构、边界行为、负值与先验的冲突，以及对背景窗口和核参数的敏感性。逐点区间也不是整条曲线的同时置信带，更不是产物鉴定概率。

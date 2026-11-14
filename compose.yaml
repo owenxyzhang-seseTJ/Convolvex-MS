@@ -1,0 +1,12 @@
+services:
+  convolvex:
+    build: .
+    ports: ["127.0.0.1:8765:8765"]
+    environment:
+      CONVOLVEX_TOKEN: "${CONVOLVEX_TOKEN:?Set a long random CONVOLVEX_TOKEN}"
+    volumes: ["convolvex-data:/data"]
+    restart: unless-stopped
+    mem_limit: 2g
+    cpus: 2
+volumes:
+  convolvex-data:

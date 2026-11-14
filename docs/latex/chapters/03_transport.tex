@@ -1,0 +1,59 @@
+\chapter{DEMS 的传输物理与响应函数}
+\section{从守恒方程到检测信号}
+DEMS 中产物从电极附近到达质谱检测器通常经过液相扩散、膜交换以及气相输运。以浓度场 $c(\bm r,t)$ 表示传输物种，在简化的稀溶液、定常流场条件下可写
+\begin{equation}
+\frac{\partial c}{\partial t}+\bm v\cdot\nabla c
+=\nabla\cdot(D\nabla c)+q(\bm r,t).
+\end{equation}
+电极源项由生成通量给定；膜面可以用线性传质边界近似，例如
+\begin{equation}
+-D\frac{\partial c}{\partial n}=k_m(c-c_{\mathrm{eq}}).
+\end{equation}
+仪器响应是穿过采样界面的通量经后续腔体、电离和检测变换后的结果。几何、扩散系数、流速、膜状态和收集效率都进入映射关系。原始研究已明确指出，传输会改变电化学质谱的动态响应，不能把检测信号直接等同于界面反应速率\cite{krempl2021}。
+
+\section{线性时不变近似}
+\begin{definition}[因果响应核]
+当源项加倍使输出加倍、多个源项的输出可相加，且系统参数不随实验时间改变时，以单位脉冲源项得到的响应定义为 $h(t)$。因果性要求 $h(t)=0$ 对一切 $t<0$ 成立。
+\end{definition}
+将一般源项看作脉冲叠加，有
+\begin{equation}
+(h*r)(t)=\int_0^{\infty}h(\tau)r(t-\tau)\,\mathrm d\tau.
+\end{equation}
+为分离形状和收集幅值，本报告约定 $\int h(t)\,\mathrm dt=1$，并把收集效率和绝对检测响应合并为 $\kappa$。于是
+\begin{equation}
+ y_m(t)=b_m(t)+\sum_j S_{mj}\kappa_j(h_j*r_j)(t)+\varepsilon_m(t),\label{eq:demsfull}
+\end{equation}
+令 $x_j=\kappa_jr_j$，则进入反问题的未知量为等效源信号 $x_j$。其中 $[r]=\mathrm{mol\,s^{-1}}$、$[h]=\mathrm{s^{-1}}$、$[\kappa]=\mathrm{C\,mol^{-1}}$，故 $[x]=[y]=\mathrm A$，量纲闭合。
+
+程序允许未归一化核参与一般拟合，并记录其质量；它不会暗中改变核。只有进入绝对定量路径时，才要求核质量、相对响应归一化和灵敏度定义相互一致。
+
+\section{两个可计算的响应模型}
+一阶充分混合模型满足
+\begin{equation}
+\tau\frac{\mathrm dz}{\mathrm dt}+z=x,
+\qquad h(t)=\frac1\tau e^{-t/\tau}\mathbf1_{t\ge0}.
+\end{equation}
+该模型描述一个时间尺度，适合教学和某些集总近似，但并不等同于全部膜传输过程。
+
+另考虑一维恒定漂移 $v>0$、扩散系数 $D>0$，从起点到距离 $L>0$ 处吸收边界的首次到达问题。其通量响应为
+\begin{equation}
+ h(t)=\frac{L}{\sqrt{4\pi Dt^3}}
+ \exp\!\left[-\frac{(L-vt)^2}{4Dt}\right],\qquad t>0.
+\end{equation}
+它的平均到达时间为 $L/v$，方差为 $2DL/v^3$。这个结果由特定边界问题推得，说明平移与展宽可以来自同一传输过程；它不应在未检查几何时直接套用于任意 DEMS 池。
+\fig{03_kernels}{.89}{联合模拟采用的三个离散响应核。它们由不同时间尺度的指数形状截断并按离散和归一化，均为合成设定。}
+
+\section{带宽、噪声与有限时间窗}
+傅里叶变换使线性卷积变为
+\begin{equation}
+\widehat y(\omega)=\widehat h(\omega)\widehat x(\omega)+\widehat\varepsilon(\omega).
+\end{equation}
+直接相除得到的误差为 $\widehat\varepsilon/\widehat h$。在 $|\widehat h|$ 很小的频率，高频噪声被急剧放大。正则化的作用是在数据支持与先验之间取得稳定折中，而不是凭空增加仪器带宽。
+\fig{11_transfer_bandwidth}{.89}{合成传输核的频率响应。随频率增加而衰减的幅值意味着快速变化信息更难稳定恢复；图中的衰减不是独立噪声估计。}
+
+若观测在响应尾部结束前停止，$\int_{t_0}^{t_1}(h*x)\,\mathrm dt$ 一般小于完整响应积分。反卷积也不能唯一确定没有观测到的任意后续源项。软件的定量路径要求操作者确认响应窗完整，但该布尔声明不构成物理完整性的证明，仍需检查尾部与实验记录。
+
+\section{模型失效的情形}
+流量或总压改变导致收集效率变化、膜润湿发生变化、信号进入饱和区、离子源条件改变，以及明显的浓度依赖传输，都可能破坏线性时不变假设。此时应建立分段、时变或非线性前向模型，而不是通过加大迭代次数掩盖模型误差。
+
+一个可操作的检查是比较多个幅值下标准脉冲的归一化形状与积分响应。形状随幅值或时间系统变化时，固定核的不确定性不能仅由拟合残差来代表。本版不自动判定核对真实实验有效，也不把合成数据中的成功恢复视作该物理假设的验证。

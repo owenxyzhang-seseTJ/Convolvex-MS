@@ -1,0 +1,73 @@
+\chapter{离散化、伴随算子与批量计算}
+\section{连续核与离散核}
+对于均匀网格 $t_n=n\Delta t$，连续卷积可由求积近似为
+\begin{equation}
+ y_n\simeq\Delta t\sum_{k=0}^{K-1}h(k\Delta t)x_{n-k}.
+\end{equation}
+定义 $h_k^{\mathrm d}=\Delta t\,h(k\Delta t)$ 后，等价地写为 $y_n=\sum_k h_k^{\mathrm d}x_{n-k}$。前者的核单位为 s$^{-1}$，后者为无量纲权重。二者不得同时再乘一次 $\Delta t$。
+
+\code{kernel_convention="density"} 使用数据的 $\Delta t$ 作为求积因子；\code{discrete} 使用因子 1。积分质量按相应约定计算并写入诊断。非均匀采样时，应使用带求积权重的积分算子，而不是把样点序号当成等间隔物理时间。
+
+\section{有限序列的边界}
+以因果零延拓卷积为例，令 $x=(x_0,x_1,x_2)^T$，$h=(h_0,h_1)$。完整卷积矩阵为
+\begin{equation}
+ C_h=\begin{pmatrix}h_0&0&0\\h_1&h_0&0\\0&h_1&h_0\\0&0&h_1\end{pmatrix}.
+\end{equation}
+若只保留前三个观测，则 $A=RC_h$，其中 $R$ 是裁剪矩阵。$x=(1,2,0)^T$、$h=(0.6,0.4)$ 时，完整输出为 $(0.6,1.6,0.8,0)^T$，因果截断输出为前三项。这种截断不等于周期卷积，末尾也不会绕回起点。
+
+本版质谱时间接口采用因果输出与观测同长。一般 Python 算子仍保留完整卷积以便验证尾部；质量轴居中线形使用明确的 \code{same} 裁剪。
+
+\section{伴随不是另一个同长度卷积}
+\begin{definition}[离散伴随]
+对欧氏内积，$A^*$ 满足任意 $x,z$ 下 $\langle Ax,z\rangle=\langle x,A^*z\rangle$。实数矩阵情况下它就是转置。
+\end{definition}
+由 $A=RC_h$ 得
+\begin{equation}
+ A^*=C_h^TR^T.
+\end{equation}
+$R^T$ 首先把截断的观测残差补零到完整输出长度，再进行核相关和输入域裁剪。若省略补零或错误选择核中心，梯度将不再对应所声明的目标函数。
+
+\begin{proposition}[谱--时间模型的伴随]
+设 $Z_j=C_jX_j$，$\Aop X=SZ$。则
+\begin{equation}
+ (\Aop^*U)_j=C_j^*(S^TU)_j.
+\end{equation}
+\end{proposition}
+\begin{proof}
+逐通道展开内积，先把 $S_{mj}$ 的求和转移到 $U$，再对每个 $C_j$ 使用伴随定义，即得结论。谱混合的转置和时间滤波伴随的顺序不能交换为同一固定核，除非各组分核相同。
+\end{proof}
+软件用随机向量检查相对内积误差
+\begin{equation}
+ e_* =\frac{|\langle Ax,z\rangle-\langle x,A^*z\rangle|}
+ {\max(|\langle Ax,z\rangle|,|\langle x,A^*z\rangle|,\epsilon_{\rm tiny})}.
+\end{equation}
+这一检查验证实现的一致性，而不验证物理模型是否正确。
+
+\section{FFT 与批量谱--时间算子}
+令 FFT 长度 $L\ge N+K_{\max}-1$，适当补零后线性卷积可由频域逐点乘法得到。对于所有组分，预存 $H_j=\operatorname{rfft}(h_j,L)$，每次前向调用执行
+\begin{align}
+ Z &= R\operatorname{irfft}\bigl(H\odot\operatorname{rfft}(X,L),L\bigr),\\
+ Y &= SZ.
+\end{align}
+伴随调用先计算 $S^TU$，补零后乘 $\overline H$，再裁剪到源项长度。核 FFT 在算子构造时计算一次；后续迭代复用缓存。
+
+\code{BatchedSpectroTemporal} 把逐组分 Python 循环改为批量 FFT，并把谱混合交给矩阵乘法。主要复杂度为
+\begin{equation}
+ O(JL\log L+MJN),
+\end{equation}
+而不是把完整 Toeplitz 块矩阵显式存储。该改进不改变离散模型、精度类型或伴随定义。初始分配与核预计算不包含在“暖调用”计时中，报告单独给出初始化成本。
+
+\section{时间正则化与质量通道}
+多组分源数组形状为 $(J,N)$。平滑或 TV 只沿时间轴施加；相邻组分标签不存在可默认利用的连续距离。类似地，选择了 2、28、44、45 等通道，不意味着应在这些行之间做图像式的二维梯度。
+
+若 $D_0x_n=x_{n+1}-x_n$，则物理导数近似为 $D_0x/\Delta t$。对于第 $p$ 阶导数惩罚，连续量
+\begin{equation}
+\lambda_{\rm phys}\int |x^{(p)}(t)|^2\,\mathrm dt
+\simeq \lambda_{\rm phys}\Delta t^{1-2p}\|D_0^{(p)}x\|_2^2.
+\end{equation}
+因此在残差项约定不变时，索引差分系数应随 $\Delta t^{1-2p}$ 缩放。本版求解器使用索引差分，并明确保存采样步长；不自动声称不同采样率下相同数值的正则化参数等效。二阶惩罚实际使用由梯度构造的离散 Laplacian，边界约定也属于模型的一部分。
+
+\section{C++ 与 GPU 的位置}
+小核直接卷积具有 $O(NK)$ 复杂度，可能比 FFT 更经济。原有 C++17 内核采用分块和可向量化循环，避免 Python 逐元素开销；对大核则通常应比较 FFT 与 overlap-add。本版不把所有任务强行转到 C++。
+
+可选 GPU 路径保留 CuPy FFT 与简化 FISTA，但本次环境没有 CUDA/CuPy，因此没有 GPU 加速比。当前多通道投影、MCP 工作流与报告基准全部在 CPU 上验证，不能由单独的 GPU 实现文件推断它们已实现 GPU 端到端执行。

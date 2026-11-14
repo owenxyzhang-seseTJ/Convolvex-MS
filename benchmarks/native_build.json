@@ -1,0 +1,13 @@
+{
+  "command": [
+    "g++",
+    "-O3",
+    "-std=c++17",
+    "-shared",
+    "-fPIC",
+    "/mnt/data/Convolvex_MS_1.1.0/cpp/kernels.cpp",
+    "-o",
+    "/mnt/data/Convolvex_MS_1.1.0/src/convolvex/_native/libconvolvex_native.so"
+  ],
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0"
+}

@@ -1,0 +1,98 @@
+{
+  "software": "Convolvex-MS",
+  "version": "1.1.0",
+  "release_date": "2026-11-14",
+  "scope": "Mass-spectrometry/DEMS backend, MCP, deterministic reference agent, LaTeX report; no new frontend",
+  "tests": {
+    "passed": 147,
+    "skipped": 2,
+    "failed": 0,
+    "errors": 0,
+    "skip_reasons": [
+      "CUDA/CuPy unavailable",
+      "official MCP Python SDK unavailable"
+    ],
+    "environment": "Linux, compiled C++ native extension available"
+  },
+  "mcp": {
+    "implemented_profiles": [
+      "2026-07-28",
+      "2025-11-25",
+      "2025-06-18"
+    ],
+    "tools": 15,
+    "real_stdio_subprocess": true,
+    "http_testclient": true,
+    "real_loopback_http_subprocess": true,
+    "official_sdk_interoperability": "skipped: dependency unavailable",
+    "third_party_hosts": "not tested",
+    "official_conformance_certification": false,
+    "mcp_tasks_extension": false
+  },
+  "agent": {
+    "protocol": "2026-07-28",
+    "jobs": 3,
+    "trace_steps": 16,
+    "conclusion_status": "conditional_model_fit_available",
+    "runner": "deterministic MCP reference client; no LLM invoked",
+    "all_converged": true,
+    "quantification_status": "not_attempted_without_operator_calibration"
+  },
+  "report": {
+    "format": "XeLaTeX",
+    "pages": 44,
+    "scientific_figure_files": 16,
+    "tikz_diagrams": 2,
+    "frontend_chapter": false,
+    "image_deblurring_examples": false,
+    "rendered_review": "all pages via contact sheets, selected pages at readable resolution"
+  },
+  "font": {
+    "requested": "Arial",
+    "rendered_font": "Arimo",
+    "exact_match": false,
+    "fallback_explicitly_permitted": true,
+    "font_files_distributed": false,
+    "svg_text": "editable; rebuild with Arial to obtain exact font"
+  },
+  "numerical_benchmark": "benchmarks/ms_results.json",
+  "synthetic_validation": "simulations/metrics.json",
+  "experimental_validation": false,
+  "user_experimental_data_included": false,
+  "llm_evaluation": false,
+  "gpu_hardware_validation": false,
+  "windows_macos_validation": false,
+  "docker_build_validation": false,
+  "environment": {
+    "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "packages": {
+      "numpy": "2.3.5",
+      "scipy": "1.17.0",
+      "fastapi": "0.128.2",
+      "uvicorn": "0.48.0",
+      "pydantic": "2.13.5",
+      "pytest": "9.0.2",
+      "httpx": "0.28.1",
+      "matplotlib": "3.10.8",
+      "pillow": "12.3.0"
+    }
+  },
+  "limitations": [
+    "No vendor binary/mzML importer",
+    "No charge-state or MS/MS identity deconvolution",
+    "No asynchronous-channel inverse through the MS MCP wrapper",
+    "No automatic experimental calibration",
+    "No automatic full model/kernel/calibration uncertainty propagation",
+    "Not a multi-tenant public service"
+  ],
+  "wheel": {
+    "built": true,
+    "file": "dist/convolvex-1.1.0-py3-none-any.whl",
+    "independent_target_install": true,
+    "import_path_verified": true,
+    "actual_mcp_subprocess_solve": true,
+    "platform_binary_distributed": false,
+    "receipt": "validation/wheel_smoke.json"
+  }
+}

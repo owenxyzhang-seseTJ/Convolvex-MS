@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "convolvex-ms": {
+      "command": "/absolute/path/.venv/bin/python",
+      "args": [
+        "-u", "-m", "convolvex.mcp_server",
+        "--workspace", "/absolute/path/ms-workspace"
+      ]
+    }
+  }
+}

@@ -1,0 +1,116 @@
+\chapter{安装、接口与复现}
+\section{目录与入口}
+\begin{longtable}{p{.45\linewidth}p{.46\linewidth}}
+\toprule 文件或目录 & 用途\\\midrule\endhead
+\code{src/convolvex/ms_operators.py} & 批量谱--时间算子、分通道投影。\\
+\code{src/convolvex/massspec.py} & 科学数据合同、拟合与背景诊断。\\
+\code{src/convolvex/ms_workspace.py} & 私有存储、任务、哈希、标定门槛。\\
+\code{src/convolvex/mcp_server.py} & 双版本时代 MCP 协议与传输。\\
+\code{src/convolvex/agent_runner.py} & 确定性参考 agent 客户端。\\
+\code{src/convolvex/plotting.py} & 严格 Arial 默认配置及字体收据。\\
+\code{examples/mcp/} & 合成数据、计划和宿主配置模板。\\
+\code{benchmarks/ms_benchmark.py} & 质谱运算加速基准。\\
+\code{scripts/ms_simulate.py} & 合成实验、图表和实际参考工作流。\\
+\code{validation/} & 测试、协议轨迹和构建验收记录。\\
+\code{docs/latex/} & 本报告的完整 LaTeX、参考文献与图。\\
+\bottomrule\end{longtable}
+
+\section{安装与测试}
+要求 Python 3.11 或以上。建议建立独立环境；CPU FFT 运行不需要 C++ 编译器，也不需要 GPU。
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=bash]
+python -m venv .venv
+# Linux / macOS
+source .venv/bin/activate
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+python -m pip install -e '.[test,report]'
+python scripts/build_native.py
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 pytest -q
+\end{lstlisting}
+\end{minipage}\par
+C++ 步骤为可选，需要本机 g++ 或 clang++。包不分发本机编译二进制，避免把某台机器的产物误作跨平台文件。Windows、macOS 和 Docker 构建未在本次环境验证。
+
+\section{供宿主调用的 stdio 配置}
+最简单的服务入口为
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=bash]
+convolvex-mcp --workspace /absolute/path/ms-workspace
+\end{lstlisting}
+\end{minipage}\par
+它等待来自标准输入的协议消息，终端没有普通交互界面是正常现象。一个常见宿主配置模板如下；具体宿主的字段与配置位置需按其文档核对。
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}
+{
+  "mcpServers": {
+    "convolvex-ms": {
+      "command": "/absolute/path/.venv/bin/python",
+      "args": ["-u", "-m", "convolvex.mcp_server",
+               "--workspace", "/absolute/path/ms-workspace"]
+    }
+  }
+}
+\end{lstlisting}
+\end{minipage}\par
+服务与参考 agent 不应同时占用同一个工作区进程锁。需要多个宿主时，应使用独立工作区或让一个受控本地 HTTP 服务统一管理，不能启动多个进程强行共享 SQLite 与任务目录。
+
+\section{复现参考工作流}
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=bash]
+python scripts/prepare_ms_demo.py --workspace ./ms-workspace
+convolvex-agent examples/mcp/workflow.json \
+  --workspace ./ms-workspace --output ./agent_trace.json
+\end{lstlisting}
+\end{minipage}\par
+准备脚本只复制明确标记为合成的数据到 \code{inbox}，不会创建真实标定，也不会把标定审核字段设为真。工作流默认的三个参数分支来自计划文件，可检查或改为一个分支。原始谱矩阵、核、损失和约束均显式存在于计划中。
+
+\section{本地 HTTP 模式}
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=bash]
+export CONVOLVEX_MCP_TOKEN='replace-with-a-random-token-at-least-32-chars'
+convolvex-mcp --workspace ./ms-http-workspace \
+  --transport streamable-http --host 127.0.0.1 --port 8766
+\end{lstlisting}
+\end{minipage}\par
+客户端使用 Bearer 令牌、\code{Content-Type: application/json} 与同时接受 JSON 和 event-stream 的 Accept 头。现代请求还携带 \code{MCP-Protocol-Version}、\code{Mcp-Method} 以及需要时的 \code{Mcp-Name}；消息体中的相应元数据必须一致。服务当前返回 JSON，不表示它实现了 SSE 流或 MCP Tasks。
+
+\section{数据格式例}
+小型标准 JSON 的结构如下。示例数值只是展示维度，不用于任何物质量计算。
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}
+{
+  "schema_version": "ms-1.0",
+  "time_s": [0, 1, 2],
+  "mz": [44, 45],
+  "signal": [[10, 9, 8], [0.12, 0.11, 0.10]],
+  "signal_unit": "a.u.",
+  "time_origin": "declared common experimental origin",
+  "instrument_id": "example-instrument",
+  "conditions_id": "example-condition",
+  "synthetic": true
+}
+\end{lstlisting}
+\end{minipage}\par
+CSV 使用唯一的 \code{time_s}、\code{mz_44} 等列名，可附 \code{current_A}。CSV 导入所需单位和时间原点由调用参数提供；复杂元数据、非同网格 EC 和掩码宜使用标准 JSON。原始厂商文件应先由经验证的适配器转换，本版没有声称自动读取所有仪器格式。
+
+\section{报告与配图构建}
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=bash]
+# Exact Arial required by default
+python scripts/ms_simulate.py
+# Explicit fallback only when Arial is absent
+python scripts/ms_simulate.py --allow-font-fallback
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  python benchmarks/ms_benchmark.py
+python scripts/report_metrics.py
+cd docs/latex
+latexmk -xelatex -interaction=nonstopmode main.tex
+\end{lstlisting}
+\end{minipage}\par
+若需同时重跑参考 agent，可给模拟脚本增加 \code{--agent-workspace} 参数；该目录必须没有其它服务占用。基准结果存在时才生成加速与内存图，因此重测基准后可再运行模拟脚本更新对应图。
+
+图表默认配置为 Arial，严格模式不允许把替代字体标成 Arial。本次预览采用显式许可的 Arimo 回退，\code{font_receipt.json} 记录请求字体、实际字体和回退状态。源文件不嵌入可安装字体；PDF 内的必要渲染字形不是独立字体交付文件。
+
+\section{复现记录的使用}
+\code{VALIDATION.json} 汇总软件版本、测试计数、跳过原因、报告页数与构建状态；\code{MANIFEST.sha256} 用于核对发布文件。数值基准原始样本、模拟真值、完整恢复数组和参考调用轨迹都随包提供。重新运行可能因库版本和硬件而有小幅数值与时间差异，因此应同时记录环境，而不只比较一个加速倍数。
+
+本版不包含前端设计章节。为保持上一版调用兼容，通用内核与原有本地界面资产仍在代码包中；质谱示例、MCP 工具目录与本报告均不再以二维或三维图像恢复为任务。
