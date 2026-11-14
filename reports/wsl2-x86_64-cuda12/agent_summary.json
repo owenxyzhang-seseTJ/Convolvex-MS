@@ -1,0 +1,27 @@
+{
+  "schema_version": "agent-trace-1.0",
+  "runner": "deterministic MCP reference client; no LLM invoked",
+  "protocol": "2026-07-28",
+  "synthetic": true,
+  "elapsed_s": 1.1887893960811198,
+  "conclusion_status": "conditional_model_fit_available",
+  "quantification_status": "not_attempted_without_operator_calibration",
+  "trace_steps": 16,
+  "jobs": [
+    {
+      "l2_factor": 0.5,
+      "converged": true,
+      "iterations": 80
+    },
+    {
+      "l2_factor": 1.0,
+      "converged": true,
+      "iterations": 100
+    },
+    {
+      "l2_factor": 2.0,
+      "converged": true,
+      "iterations": 90
+    }
+  ]
+}

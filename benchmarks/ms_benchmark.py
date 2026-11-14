@@ -3,7 +3,7 @@ Run with OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1.
 Warm-call measurements exclude object construction; initialization is separate.
 """
 from pathlib import Path
-import json, platform, os, time, statistics
+import argparse, json, platform, os, time, statistics, subprocess
 import numpy as np
 import scipy
 from scipy.linalg import block_diag
@@ -24,6 +24,10 @@ def timed(fn,repeats=9,warmups=2):
     return {'median_ms':statistics.median(vals),'samples_ms':vals,'warmups':warmups,'repeats':repeats}
 
 def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output',type=Path,default=ROOT/'benchmarks/ms_results.json',
+                        help='Write this run separately from bundled reference results')
+    args=parser.parse_args()
     rng=np.random.default_rng(1973);rows=[];setup=[]
     for channels,species,n,k in [(8,3,4096,129),(24,12,8192,257),(32,16,32768,513)]:
         S=rng.uniform(.05,1,(channels,species));S/=np.linalg.norm(S,axis=0)
@@ -73,12 +77,24 @@ def main():
     path=Path('/proc/cpuinfo')
     if path.exists():
         cpu=next((line.split(':',1)[1].strip() for line in path.read_text().splitlines() if line.startswith('model name')),cpu)
+    elif platform.system()=='Darwin':
+        try:
+            result=subprocess.run(['sysctl','-n','machdep.cpu.brand_string'],capture_output=True,text=True,check=True)
+            cpu=result.stdout.strip() or cpu
+        except (OSError,subprocess.CalledProcessError):
+            cpu=platform.processor() or cpu
+    elif platform.system()=='Windows':
+        import winreg
+        with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,r'HARDWARE\DESCRIPTION\System\CentralProcessor\0') as key:
+            cpu=winreg.QueryValueEx(key,'ProcessorNameString')[0].strip()
     data={'schema':'ms-benchmark-1.1','seed':1973,'environment':{'python':platform.python_version(),'numpy':np.__version__,
         'scipy':scipy.__version__,'platform':platform.platform(),'cpu':cpu,
-        'threads':{key:os.environ.get(key) for key in ['OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS']},
+        'machine':platform.machine(),'cpu_count':os.cpu_count(),
+        'threads':{key:os.environ.get(key) for key in ['OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS']},
         'gpu':capability(),'native_available':available()},'warm_call_excludes':'operator initialization / kernel FFT; separately measured below',
-        'initialization':setup,'rows':rows,'not_measured':['GPU: no available CuPy/CUDA device','third-party MCP/LLM latency']}
-    out=ROOT/'benchmarks/ms_results.json';out.write_text(json.dumps(data,indent=2,allow_nan=False))
+        'initialization':setup,'rows':rows,'not_measured':['GPU timings (this benchmark measures CPU paths)','third-party MCP/LLM latency']}
+    out=args.output;out.parent.mkdir(parents=True,exist_ok=True)
+    out.write_text(json.dumps(data,indent=2,allow_nan=False))
     for r in rows:
         print(r['task'],r['shape'],round(r.get('speedup',r.get('speedup_direct_over_fft')),3))
     print(out)

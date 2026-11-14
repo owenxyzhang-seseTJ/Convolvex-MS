@@ -1,0 +1,103 @@
+{
+  "environment": {
+    "platform": "Windows-11-10.0.22631-SP0",
+    "python": "3.13.5",
+    "executable": "${PROJECT_ROOT}\\.venv\\Scripts\\python.exe",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-12700H",
+    "cpu_count": 20,
+    "native_available": false,
+    "gpu": {
+      "available": false,
+      "reason": "No module named 'cupy'"
+    },
+    "versions": {
+      "convolvex": "1.1.0",
+      "numpy": "2.3.5",
+      "scipy": "1.17.0",
+      "fastapi": "0.128.2",
+      "uvicorn": "0.48.0",
+      "pydantic": "2.13.5",
+      "pytest": "9.0.2",
+      "httpx": "0.28.1",
+      "mcp": "1.26.0"
+    }
+  },
+  "steps": [
+    {
+      "name": "pytest",
+      "returncode": 0,
+      "wall_s": 12.926018500002101
+    },
+    {
+      "name": "ms_benchmark",
+      "returncode": 0,
+      "wall_s": 4.331379499984905
+    },
+    {
+      "name": "accuracy",
+      "returncode": 0,
+      "wall_s": 2.0900562000460923
+    },
+    {
+      "name": "prepare_agent",
+      "returncode": 0,
+      "wall_s": 0.09781179996207356
+    },
+    {
+      "name": "agent_workflow",
+      "returncode": 0,
+      "wall_s": 3.0213040001690388
+    },
+    {
+      "name": "start_services",
+      "returncode": 0,
+      "wall_s": 5.469671599799767
+    },
+    {
+      "name": "http_end_to_end",
+      "returncode": 0,
+      "wall_s": 2.6672191000543535
+    },
+    {
+      "name": "service_status",
+      "returncode": 0,
+      "wall_s": 0.10376579989679158
+    },
+    {
+      "name": "pip_check",
+      "returncode": 0,
+      "wall_s": 1.0249501999933273
+    },
+    {
+      "name": "requirements",
+      "returncode": 0,
+      "wall_s": 0.4383757999166846
+    }
+  ],
+  "all_accuracy_data_synthetic": true,
+  "tests": {
+    "tests": 153,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 6,
+    "passed": 147
+  },
+  "summary": {
+    "joint_rmse": 0.010632057585088154,
+    "all_joint_cases_converged": true,
+    "independent_noise": {
+      "seeds": [
+        1701,
+        1702,
+        1703,
+        1704,
+        1705
+      ],
+      "mean_rmse": 0.009820687388462052,
+      "std_rmse": 0.00044514863213191336,
+      "min_rmse": 0.009093808175679648,
+      "max_rmse": 0.01028256003892558
+    }
+  },
+  "completed": true
+}

@@ -1,0 +1,17 @@
+{
+  "python": "3.13.13",
+  "chip": "Apple M5",
+  "passed": 151,
+  "skipped": 1,
+  "profile": "macOS 26.5 / arm64 / CPU FFT and C++",
+  "ports": {
+    "web": 8765,
+    "mcp": 8766
+  },
+  "recorded_date": "2026-11-14",
+  "software_version": "1.1.0",
+  "deployment_revision": "deploy.1",
+  "all_accuracy_data_synthetic": true,
+  "historical_run": true,
+  "personal_filesystem_paths": "replaced with PROJECT_ROOT/USER_HOME placeholders; numeric values retained"
+}

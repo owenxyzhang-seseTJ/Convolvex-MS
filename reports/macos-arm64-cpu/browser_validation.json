@@ -1,0 +1,19 @@
+{
+  "url": "http://127.0.0.1:8765/",
+  "browser": "isolated Chrome through Playwright CLI 0.1.22",
+  "actions": [
+    "select DEMS",
+    "load example",
+    "click Run"
+  ],
+  "visible_status": "已收敛",
+  "iterations": 320,
+  "relative_residual_display": 0.02413,
+  "stationarity_display": 8.9e-07,
+  "adjoint_relative_error_display": 3.36e-16,
+  "screenshot": "output/playwright/dems-completed.png",
+  "console_errors": [
+    "404 /favicon.ico"
+  ],
+  "javascript_exceptions_observed": false
+}

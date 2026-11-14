@@ -1,0 +1,148 @@
+{
+  "scope": "small 1D GPU convolution only; not complete MS inversion",
+  "concurrent_load_expected": true,
+  "load_before": {
+    "returncode": 0,
+    "csv": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 97, 372, 8192, 74"
+  },
+  "device": {
+    "available": true,
+    "devices": 1,
+    "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "cupy": "14.2.0"
+  },
+  "python": "3.12.3",
+  "threads": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1"
+  },
+  "rows": [
+    {
+      "samples": 4096,
+      "kernel_length": 31,
+      "max_forward_absolute_error": 9.992007221626409e-16,
+      "max_adjoint_absolute_error": 8.413408858487514e-16,
+      "cpu_fft": {
+        "median_ms": 0.054759904742240906,
+        "samples_ms": [
+          0.05824211984872818,
+          0.0948288943618536,
+          0.05953595973551273,
+          0.054759904742240906,
+          0.05371915176510811,
+          0.05324208177626133,
+          0.054172007367014885,
+          0.052682822570204735,
+          0.05526910535991192
+        ],
+        "warmups": 2,
+        "repeats": 9
+      },
+      "gpu_resident": {
+        "median_ms": 0.41071604937314987,
+        "samples_ms": [
+          0.4091139417141676,
+          0.422412995249033,
+          0.4194779321551323,
+          0.44158706441521645,
+          0.40426105260849,
+          0.46873209066689014,
+          0.41071604937314987,
+          0.40604686364531517,
+          0.4045250825583935
+        ],
+        "warmups": 2,
+        "repeats": 9
+      },
+      "gpu_with_transfers": {
+        "median_ms": 0.425620935857296,
+        "samples_ms": [
+          0.4869771655648947,
+          0.33968500792980194,
+          0.40760706178843975,
+          0.40860986337065697,
+          0.44603808782994747,
+          0.46204403042793274,
+          0.425620935857296,
+          0.39831199683248997,
+          0.4331821110099554
+        ],
+        "warmups": 2,
+        "repeats": 9
+      },
+      "speedup_resident": 0.13332789119348396,
+      "speedup_with_transfers": 0.12865886080519554,
+      "load_after_case": {
+        "returncode": 0,
+        "csv": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 97, 533, 8192, 75"
+      }
+    },
+    {
+      "samples": 65536,
+      "kernel_length": 257,
+      "max_forward_absolute_error": 5.551115123125783e-16,
+      "max_adjoint_absolute_error": 5.551115123125783e-16,
+      "cpu_fft": {
+        "median_ms": 0.8310419507324696,
+        "samples_ms": [
+          0.8563960436731577,
+          0.8601308800280094,
+          0.84654800593853,
+          0.8048319723457098,
+          0.8281099144369364,
+          0.8363320957869291,
+          0.8310419507324696,
+          0.8006279822438955,
+          0.8150818757712841
+        ],
+        "warmups": 2,
+        "repeats": 9
+      },
+      "gpu_resident": {
+        "median_ms": 0.46699587255716324,
+        "samples_ms": [
+          0.5170980002731085,
+          0.4555080085992813,
+          0.4518891219049692,
+          0.47924090176820755,
+          0.44917711056768894,
+          0.5307469982653856,
+          0.45908382162451744,
+          0.46699587255716324,
+          0.47508906573057175
+        ],
+        "warmups": 2,
+        "repeats": 9
+      },
+      "gpu_with_transfers": {
+        "median_ms": 0.702365068718791,
+        "samples_ms": [
+          0.7381290197372437,
+          0.6767460145056248,
+          0.6186619866639376,
+          0.7042991928756237,
+          0.7103472016751766,
+          0.6554590072482824,
+          0.7301499135792255,
+          0.6632620934396982,
+          0.702365068718791
+        ],
+        "warmups": 2,
+        "repeats": 9
+      },
+      "speedup_resident": 1.7795488131016506,
+      "speedup_with_transfers": 1.1832051275676374,
+      "load_after_case": {
+        "returncode": 0,
+        "csv": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 97, 537, 8192, 75"
+      }
+    }
+  ],
+  "free_bytes_before": 7442792448,
+  "total_bytes": 8589410304,
+  "cupy_memory_pool_bytes": 5157376,
+  "load_after": {
+    "returncode": 0,
+    "csv": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 97, 537, 8192, 75"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "os": "macOS-26.5-arm64-arm-64bit-Mach-O",
+  "python": "3.13.13",
+  "chip": "Apple M5",
+  "model": "Mac17,3",
+  "memory": "16 GB",
+  "cpu_configuration": "proc 10:4:6:0",
+  "package_path": "${PROJECT_ROOT}/.venv/lib/python3.13/site-packages/convolvex/__init__.py",
+  "package_version": "1.1.0",
+  "native_available": true
+}

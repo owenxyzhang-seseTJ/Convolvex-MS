@@ -1,0 +1,87 @@
+{
+  "environment": {
+    "platform": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "executable": "${PROJECT_ROOT}/.venv/bin/python",
+    "cpu": "12th Gen Intel(R) Core(TM) i7-12700H",
+    "cpu_count": 20,
+    "native_available": true,
+    "gpu": {
+      "available": true,
+      "devices": 1,
+      "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "cupy": "14.2.0"
+    },
+    "versions": {
+      "convolvex": "1.1.0",
+      "numpy": "2.3.5",
+      "scipy": "1.17.0",
+      "fastapi": "0.128.2",
+      "uvicorn": "0.48.0",
+      "pydantic": "2.13.5",
+      "pytest": "9.0.2",
+      "httpx": "0.28.1",
+      "mcp": "1.26.0"
+    }
+  },
+  "steps": [
+    {
+      "name": "start_services",
+      "returncode": 0,
+      "wall_s": 1.8392430408857763
+    },
+    {
+      "name": "http_end_to_end",
+      "returncode": 0,
+      "wall_s": 0.8062951259780675
+    },
+    {
+      "name": "service_status",
+      "returncode": 0,
+      "wall_s": 0.03226465708576143
+    },
+    {
+      "name": "pip_check",
+      "returncode": 0,
+      "wall_s": 0.5007601419929415
+    },
+    {
+      "name": "requirements",
+      "returncode": 0,
+      "wall_s": 0.30316725303418934
+    }
+  ],
+  "all_accuracy_data_synthetic": true,
+  "reused_numerical_artifacts": [
+    "pytest",
+    "ms_benchmark",
+    "accuracy",
+    "prepare_agent",
+    "agent_workflow"
+  ],
+  "tests": {
+    "tests": 153,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 153
+  },
+  "summary": {
+    "joint_rmse": 0.010632057585088131,
+    "all_joint_cases_converged": true,
+    "independent_noise": {
+      "seeds": [
+        1701,
+        1702,
+        1703,
+        1704,
+        1705
+      ],
+      "mean_rmse": 0.009820687388462054,
+      "std_rmse": 0.00044514863213192604,
+      "min_rmse": 0.009093808175679629,
+      "max_rmse": 0.010282560038925593
+    }
+  },
+  "completed": true
+}

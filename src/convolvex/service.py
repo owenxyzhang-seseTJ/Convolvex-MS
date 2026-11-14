@@ -10,6 +10,7 @@ import asyncio,hashlib,hmac,json,os,sqlite3,threading,time,uuid
 from fastapi import FastAPI,HTTPException,Request
 from fastapi.responses import FileResponse,JSONResponse
 from fastapi.staticfiles import StaticFiles
+from . import __version__
 from .pipeline import Problem,execute,demo
 from .native import available as native_available
 from .gpu import capability
@@ -77,7 +78,7 @@ def create_app(data_dir=None):
     async def lifespan(app):
         yield
         store.close()
-    app=FastAPI(title="Convolvex",version="1.0.0",lifespan=lifespan)
+    app=FastAPI(title="Convolvex",version=__version__,lifespan=lifespan)
     app.state.store=store
     token=os.environ.get("CONVOLVEX_TOKEN","")
     @app.middleware("http")
@@ -85,7 +86,8 @@ def create_app(data_dir=None):
         # No cross-origin CORS. Bind loopback by default; token needed for shared instances.
         if request.url.path.startswith("/api/") and token:
             given=request.headers.get("authorization","").removeprefix("Bearer ")
-            if not hmac.compare_digest(given,token): return JSONResponse({"detail":"Authentication required"},401)
+            if not hmac.compare_digest(given.encode("utf-8"),token.encode("utf-8")):
+                return JSONResponse({"detail":"Authentication required"},401)
         length=request.headers.get("content-length","0")
         try:
             if int(length)>32_000_000: return JSONResponse({"detail":"Request too large"},413)
@@ -99,9 +101,9 @@ def create_app(data_dir=None):
         response.headers["Content-Security-Policy"]="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; frame-ancestors 'none'"
         return response
     @app.get("/api/v1/health")
-    def health(): return {"status":"ok","version":"1.0.0"}
+    def health(): return {"status":"ok","version":__version__}
     @app.get("/api/v1/capabilities")
-    def capabilities(): return {"cpp":native_available(),"gpu":capability(),"max_elements":1_000_000,"max_iter":5000,"workers":2,"version":"1.0.0"}
+    def capabilities(): return {"cpp":native_available(),"gpu":capability(),"max_elements":1_000_000,"max_iter":5000,"workers":2,"version":__version__}
     @app.get("/api/v1/demo/{kind}")
     def load_demo(kind:str,seed:int=7):
         try: return demo(kind,seed)

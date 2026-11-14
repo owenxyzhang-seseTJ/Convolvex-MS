@@ -1,0 +1,96 @@
+{
+  "transport": "real loopback sockets",
+  "all_data_synthetic": true,
+  "web_dems": {
+    "health": {
+      "status": "ok",
+      "version": "1.1.0"
+    },
+    "job_id": "e84dfef3-7dbc-443a-a4c4-73d80eb3f4c9",
+    "status": "completed",
+    "converged": true,
+    "iterations": 320,
+    "source_rmse": 0.02697916656234096,
+    "relative_residual": 0.02413477356892697,
+    "solver_elapsed_s": 0.06134979099442717
+  },
+  "http_mcp_joint": {
+    "job_id": "faef1df8-e34a-4628-95b2-243e8ce53b36",
+    "converged": true,
+    "iterations": 100,
+    "source_rmse": 0.010632057585088102,
+    "solver_elapsed_s": 0.02541316600400023,
+    "protocol": "2026-07-28",
+    "server_version": "1.1.0",
+    "tool_count": 15
+  },
+  "http_mcp_mass_profile": {
+    "job_id": "52a364d5-09e6-4a25-a919-4783d7a4e9a1",
+    "converged": true,
+    "iterations": 180,
+    "source_rmse": 0.0032210895527617026
+  },
+  "http_auth": {
+    "missing_token_status": 401,
+    "non_ascii_token_status": 401
+  },
+  "mcp_calls": [
+    {
+      "tool": "ms_capabilities",
+      "success": true
+    },
+    {
+      "tool": "ms_import_dataset",
+      "success": true
+    },
+    {
+      "tool": "ms_submit_analysis",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_result",
+      "success": true
+    },
+    {
+      "tool": "ms_read_array",
+      "success": true
+    },
+    {
+      "tool": "ms_read_array",
+      "success": true
+    },
+    {
+      "tool": "ms_read_array",
+      "success": true
+    },
+    {
+      "tool": "ms_submit_mass_profile",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_result",
+      "success": true
+    },
+    {
+      "tool": "ms_read_array",
+      "success": true
+    }
+  ],
+  "total_wall_s": 0.29229237500112504
+}

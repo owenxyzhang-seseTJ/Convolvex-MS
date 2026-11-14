@@ -1,0 +1,16 @@
+{
+  "platform": "windows",
+  "arch": "x86_64",
+  "python_tested": "3.13.5",
+  "ports": {
+    "web": 8875,
+    "mcp": 8876
+  },
+  "native_compiler": null,
+  "gpu": false,
+  "profile": "windows-x86_64-cpu",
+  "software_version": "1.1.0",
+  "revision": "deploy.1",
+  "distribution": "source deployment bundle; third-party runtimes are installed separately",
+  "evidence": "reports/windows-x86_64-cpu"
+}

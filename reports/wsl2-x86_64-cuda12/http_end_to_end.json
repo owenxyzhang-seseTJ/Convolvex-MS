@@ -1,0 +1,104 @@
+{
+  "transport": "real loopback sockets",
+  "all_data_synthetic": true,
+  "web_dems": {
+    "health": {
+      "status": "ok",
+      "version": "1.1.0"
+    },
+    "job_id": "f730543a-21d9-4833-a4b1-23a4496f4cf5",
+    "status": "completed",
+    "converged": true,
+    "iterations": 320,
+    "source_rmse": 0.026979166562341006,
+    "relative_residual": 0.024134773568926966,
+    "solver_elapsed_s": 0.16497772908769548
+  },
+  "http_mcp_joint": {
+    "job_id": "baf0f78a-033e-4c12-9bf0-537ac7bbe525",
+    "converged": true,
+    "iterations": 100,
+    "source_rmse": 0.010632057585088131,
+    "solver_elapsed_s": 0.039747517090290785,
+    "protocol": "2026-07-28",
+    "server_version": "1.1.0",
+    "tool_count": 15
+  },
+  "http_mcp_mass_profile": {
+    "job_id": "1fb6dc59-fcf9-4f80-8937-1878108f7213",
+    "converged": true,
+    "iterations": 180,
+    "source_rmse": 0.003221089552761727
+  },
+  "http_auth": {
+    "missing_token_status": 401,
+    "non_ascii_token_status": 401
+  },
+  "mcp_calls": [
+    {
+      "tool": "ms_capabilities",
+      "success": true
+    },
+    {
+      "tool": "ms_import_dataset",
+      "success": true
+    },
+    {
+      "tool": "ms_submit_analysis",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_result",
+      "success": true
+    },
+    {
+      "tool": "ms_read_array",
+      "success": true
+    },
+    {
+      "tool": "ms_read_array",
+      "success": true
+    },
+    {
+      "tool": "ms_read_array",
+      "success": true
+    },
+    {
+      "tool": "ms_submit_mass_profile",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_result",
+      "success": true
+    },
+    {
+      "tool": "ms_read_array",
+      "success": true
+    }
+  ],
+  "total_wall_s": 0.6784844410140067
+}

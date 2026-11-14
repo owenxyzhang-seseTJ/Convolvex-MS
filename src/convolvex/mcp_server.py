@@ -283,7 +283,7 @@ def create_http_app(application,token,port=8766):
         if origin is not None and origin not in origins:
             return JSONResponse({"error":"Origin denied"},403)
         supplied=request.headers.get("authorization","")
-        if not hmac.compare_digest(supplied,"Bearer "+token):
+        if not hmac.compare_digest(supplied.encode("utf-8"),("Bearer "+token).encode("utf-8")):
             return JSONResponse({"error":"Authentication required"},401,headers={"WWW-Authenticate":"Bearer"})
         result=await call_next(request)
         result.headers["X-Content-Type-Options"]="nosniff"

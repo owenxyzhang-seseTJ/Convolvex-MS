@@ -1,0 +1,16 @@
+{
+  "platform": "linux-wsl2",
+  "arch": "x86_64",
+  "python_tested": "3.12.3",
+  "ports": {
+    "web": 8865,
+    "mcp": 8866
+  },
+  "native_compiler": "g++",
+  "gpu": "cupy-cuda12x; CUDA driver required",
+  "profile": "wsl2-x86_64-cuda12",
+  "software_version": "1.1.0",
+  "revision": "deploy.1",
+  "distribution": "source deployment bundle; third-party runtimes are installed separately",
+  "evidence": "reports/wsl2-x86_64-cuda12"
+}

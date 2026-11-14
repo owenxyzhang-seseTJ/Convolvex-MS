@@ -149,11 +149,22 @@ def test_files_sandbox(tmp_path,dataset):
         assert w.import_file('data.json')['shape']==[3,90]
         for path in ['../data.json','/etc/passwd','https://example.com/data.json']:
             with pytest.raises(ValueError):w.import_file(path)
-        outside=tmp_path/'outside.json';write_json(outside,data.model_dump())
-        (w.root/'inbox'/'link.json').symlink_to(outside)
-        with pytest.raises(ValueError,match='links'):w.import_file('link.json')
         (w.root/'inbox'/'bad.csv').write_text('time_s,mz_44\n0,=system()\n1,4\n')
         with pytest.raises(ValueError):w.import_file('bad.csv')
+    finally:w.close()
+
+
+def test_symbolic_link_import_rejected(tmp_path,dataset):
+    data,*_=dataset;w=MSWorkspace(tmp_path/'ws')
+    try:
+        outside=tmp_path/'outside.json';write_json(outside,data.model_dump())
+        try:
+            (w.root/'inbox'/'link.json').symlink_to(outside)
+        except OSError as exc:
+            if getattr(exc,'winerror',None)==1314:
+                pytest.skip('Windows account cannot create symlinks (WinError 1314); import guards remain enabled')
+            raise
+        with pytest.raises(ValueError,match='links'):w.import_file('link.json')
     finally:w.close()
 
 

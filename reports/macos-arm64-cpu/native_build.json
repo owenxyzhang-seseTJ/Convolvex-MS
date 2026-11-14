@@ -1,0 +1,13 @@
+{
+  "command": [
+    "clang++",
+    "-O3",
+    "-std=c++17",
+    "-dynamiclib",
+    "-fPIC",
+    "${PROJECT_ROOT}/cpp/kernels.cpp",
+    "-o",
+    "${PROJECT_ROOT}/src/convolvex/_native/libconvolvex_native.dylib"
+  ],
+  "compiler": "Apple clang version 21.0.0 (clang-2100.0.123.102)"
+}

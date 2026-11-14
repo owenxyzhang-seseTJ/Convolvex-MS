@@ -1,0 +1,17 @@
+{
+  "python": "3.12.3",
+  "chip": "Intel Core i7-12700H + RTX 3070 Ti Laptop 8 GB",
+  "passed": 153,
+  "skipped": 0,
+  "profile": "WSL2 / Linux x86_64 / CPU FFT, C++ and CUDA parity",
+  "ports": {
+    "web": 8865,
+    "mcp": 8866
+  },
+  "recorded_date": "2026-11-14",
+  "software_version": "1.1.0",
+  "deployment_revision": "deploy.1",
+  "all_accuracy_data_synthetic": true,
+  "historical_run": true,
+  "personal_filesystem_paths": "replaced with PROJECT_ROOT/USER_HOME placeholders; numeric values retained"
+}

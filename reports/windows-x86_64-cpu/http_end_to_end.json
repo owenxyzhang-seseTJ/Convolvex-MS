@@ -1,0 +1,136 @@
+{
+  "transport": "real loopback sockets",
+  "all_data_synthetic": true,
+  "web_dems": {
+    "health": {
+      "status": "ok",
+      "version": "1.1.0"
+    },
+    "job_id": "9a18de9b-1f34-4945-a300-18585b57acd5",
+    "status": "completed",
+    "converged": true,
+    "iterations": 320,
+    "source_rmse": 0.026979166562340985,
+    "relative_residual": 0.02413477356892697,
+    "solver_elapsed_s": 0.5301741999574006
+  },
+  "http_mcp_joint": {
+    "job_id": "5244d46f-8200-4979-ad07-3892dde21622",
+    "converged": true,
+    "iterations": 100,
+    "source_rmse": 0.010632057585088154,
+    "solver_elapsed_s": 0.16975690005347133,
+    "protocol": "2026-07-28",
+    "server_version": "1.1.0",
+    "tool_count": 15
+  },
+  "http_mcp_mass_profile": {
+    "job_id": "9412b466-e074-43b5-b3d9-eed243b30bfe",
+    "converged": true,
+    "iterations": 180,
+    "source_rmse": 0.003221089552761727
+  },
+  "http_auth": {
+    "missing_token_status": 401,
+    "non_ascii_token_status": 401
+  },
+  "mcp_calls": [
+    {
+      "tool": "ms_capabilities",
+      "success": true
+    },
+    {
+      "tool": "ms_import_dataset",
+      "success": true
+    },
+    {
+      "tool": "ms_submit_analysis",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_result",
+      "success": true
+    },
+    {
+      "tool": "ms_read_array",
+      "success": true
+    },
+    {
+      "tool": "ms_read_array",
+      "success": true
+    },
+    {
+      "tool": "ms_read_array",
+      "success": true
+    },
+    {
+      "tool": "ms_submit_mass_profile",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_job",
+      "success": true
+    },
+    {
+      "tool": "ms_get_result",
+      "success": true
+    },
+    {
+      "tool": "ms_read_array",
+      "success": true
+    }
+  ],
+  "total_wall_s": 2.3845104000065476
+}

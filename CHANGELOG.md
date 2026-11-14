@@ -1,3 +1,12 @@
+# Deployment revision deploy.1 — 2026-11-14
+
+- Keep numerical package version 1.1.0; tag v1.1.0-deploy.1 records deployment fixes.
+- Correct HTTP/UI version metadata and reject non-ASCII authorization headers with 401.
+- Add native Windows service paths, process ownership checks, detached startup, configurable ports, and platform launchers.
+- Split Windows symlink-privilege coverage from ordinary import guards; skip only the unsupported fixture.
+- Record macOS CPU, WSL CPU/C++/CUDA parity, and native Windows CPU/MCP/HTTP measurements with scope and skip reasons.
+- Add source deployment bundles for macOS ARM64 CPU, WSL2 x86_64 CUDA12 and Windows x86_64 CPU.
+
 # 1.1.0 — MS and MCP
 
 - Added mass-spectrometry contracts, immutable datasets, scan/units/mask audit.

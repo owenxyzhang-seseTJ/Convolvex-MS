@@ -27,3 +27,6 @@ mcp-client.local.json
 src/convolvex/_native/*.so
 src/convolvex/_native/*.dylib
 src/convolvex/_native/*.dll
+validation_local/
+validation_*/
+test-results.xml
