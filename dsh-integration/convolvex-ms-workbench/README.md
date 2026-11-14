@@ -2,6 +2,17 @@
 
 在 DSH 左侧栏打开 **Convolvex-MS 质谱工作台**。插件直接复用 `Convolvex_MS_1.1.0/src/convolvex/web` 的原 Web 前端（HTML、CSS、`app.js`、`ms.js`、`dems.js`），由插件 Host 启动项目自带的 Python 服务，不另开端口给浏览器，也不需要访问令牌。
 
+## 安装
+
+npm 包：`dsh-convolvex-ms-workbench`（公开包）。在 DSH 中安装：
+
+```bash
+dsh plugin --profile desktop add dsh-convolvex-ms-workbench
+```
+
+安装后把插件行配置中的 `appRoot` 指向 Convolvex-MS 仓库检出目录；从本仓库内的
+`dsh-integration` 目录运行时则无需配置。插件不会自动安装 Python 依赖。
+
 ## 工作区绑定
 
 - 面板顶部的工作区选择器列出 DSH 已注册工作区。
