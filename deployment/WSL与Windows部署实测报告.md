@@ -1,17 +1,17 @@
-# athena-wsl 与 Windows 原生部署及实测
+# WSL2 与 Windows 原生部署及实测
 
 2026-11-14，Asia/Shanghai。目标为同一台 i7-12700H / RTX 3070 Ti Laptop 8 GB 电脑。两套部署完成，服务均保持运行；MCP 官方 SDK、stdio 参考工作流和实际 HTTP 分析均已通过。
 
 | 环境 | 安装目录 | Python | 测试结果 | 运行能力 |
 |---|---|---|---|---|
-| WSL2 | `/home/xiaoyu/apps/convolvex-ms-1.1.0` | 3.12.3 | **153 passed，0 skipped** | CPU FFT、Linux C++、CUDA 数值一致性 |
-| Windows 11 原生 | `C:\Users\owenz\apps\convolvex-ms-1.1.0` | 3.13.5 | **147 passed，6 skipped** | CPU FFT、原生 Python/MCP/HTTP |
+| WSL2 | `/path/to/Convolvex-MS` | 3.12.3 | **153 passed，0 skipped** | CPU FFT、Linux C++、CUDA 数值一致性 |
+| Windows 11 原生 | `C:\path\to\Convolvex-MS` | 3.13.5 | **147 passed，6 skipped** | CPU FFT、原生 Python/MCP/HTTP |
 
 Windows 跳过项是 4 个未编译 C++ DLL 用例、1 个未安装 CuPy 的 GPU 用例，以及 1 个普通账户无法创建符号链接的用例（WinError 1314）。其余路径限制、CSV 导入约束和认证测试仍实际执行；未修改 Windows 开发者模式或申请管理员权限。
 
 ## 使用入口
 
-当前 Mac 已建立到 WSL 的本地 SSH 转发，可打开 [WSL 工作台](http://127.0.0.1:18865)。该转发依赖 Mac 与目标电脑在线。停止转发可用 `ssh -S /private/tmp/convolvex-athena-01a1d886.sock -O exit athena-wsl`，不影响远端服务。
+当前 Mac 已建立到 WSL 的本地 SSH 转发，可打开 [WSL 工作台](http://127.0.0.1:18865)。该转发依赖 Mac 与目标电脑在线。停止转发可用 `ssh -S /tmp/convolvex.sock -O exit <wsl-host>`，不影响远端服务。
 
 | 访问位置 | Web 工作台 | MCP HTTP |
 |---|---|---|
@@ -78,7 +78,7 @@ Windows 该前向案例加速为 0.94×，即本次略慢；不隐去该结果�
 WSL：
 
 ```bash
-cd /home/xiaoyu/apps/convolvex-ms-1.1.0
+cd /path/to/Convolvex-MS
 ./启动本地服务.sh
 ./停止本地服务.sh
 .venv/bin/python scripts/local_services.py status
@@ -89,7 +89,7 @@ OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 .venv/bin/python benc
 Windows 原生：双击项目目录里的 `start_windows.cmd` / `stop_windows.cmd`。PowerShell 也可执行：
 
 ```powershell
-Set-Location 'C:\Users\owenz\apps\convolvex-ms-1.1.0'
+Set-Location 'C:\path\to\Convolvex-MS'
 & '.\.venv\Scripts\python.exe' 'scripts\local_services.py' status
 & '.\.venv\Scripts\python.exe' 'scripts\validate_deployment.py' --output-dir validation_windows
 ```
