@@ -243,10 +243,17 @@ const toolbarCss = `
 .cvx-dot { width:8px; height:8px; border-radius:50%; background:var(--dsw-alias-state-idle-primary, #999); flex:none; }
 .cvx-dot[data-state="ready"] { background:var(--dsw-alias-state-success-primary, #3f9b6d); }
 .cvx-dot[data-state="error"] { background:var(--dsw-alias-state-error-primary, #c14b55); }
-.cvx-tabs { display:flex; align-items:center; gap:3px; padding:3px; border-radius:8px; background:var(--dsw-alias-bg-layer-2); }
-.cvx-tab { height:32px; padding:0 13px; border:0; border-radius:7px; background:transparent; color:var(--dsw-alias-label-secondary); font-size:14px; cursor:pointer; white-space:nowrap; }
-.cvx-tab:hover { color:var(--dsw-alias-label-primary); background:var(--dsw-alias-bg-layer-1); }
-.cvx-tab[data-active="true"] { color:var(--dsw-alias-label-primary); background:var(--dsw-alias-bg-layer-1); box-shadow:0 1px 2px rgb(0 0 0 / .12); }
+.cvx-tabs { position:relative; display:flex; align-items:center; gap:4px; padding:0; border-radius:8px; background:transparent; }
+.cvx-tab { position:relative; z-index:1; height:32px; padding:0 13px; border:1px solid transparent; border-radius:7px; background:transparent; color:var(--dsw-alias-label-secondary); font-size:14px; cursor:pointer; white-space:nowrap; }
+.cvx-tab:hover { color:var(--dsw-alias-label-primary); border-color:var(--dsw-alias-border-l1); }
+.cvx-tab[data-active="true"] { color:var(--dsw-alias-label-primary); background:transparent; font-weight:600; box-shadow:none; }
+.cvx-tab-indicator {
+  position:absolute; z-index:0; top:0; left:0; height:32px; border:1px solid color-mix(in srgb, var(--dsw-alias-brand-primary) 38%, var(--dsw-alias-border-l2)); border-radius:7px;
+  background:color-mix(in srgb, var(--dsw-alias-brand-primary) 5%, transparent);
+  box-shadow:0 2px 8px rgb(0 0 0 / .04);
+  pointer-events:none;
+  transition: transform .34s var(--cvx-ease), width .34s var(--cvx-ease), opacity .2s ease;
+}
 .cvx-ws { display:flex; align-items:center; gap:8px; min-width:0; font-size:14px; color:var(--dsw-alias-label-secondary); }
 .cvx-ws select { min-width:180px; max-width:320px; height:34px; padding:0 10px; border-radius:8px; border:1px solid var(--dsw-alias-border-l1); background:var(--dsw-alias-bg-base); color:var(--dsw-alias-label-primary); font-size:14px; }
 .cvx-binding { max-width:280px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; color:var(--dsw-alias-label-secondary); }
@@ -383,7 +390,7 @@ const wrapper = String.raw`window.__ModuleLoader__.load({
   factory(require) {
     const React = require('react');
     const h = React.createElement;
-    const { useEffect, useMemo, useRef, useState } = React;
+    const { useEffect, useLayoutEffect, useMemo, useRef, useState } = React;
     const NS = 'convolvex-ms-workbench';
     const CHANNEL = '/convolvex-ms-workbench';
     const CSS = ${JSON.stringify(css)};
@@ -437,12 +444,37 @@ const wrapper = String.raw`window.__ModuleLoader__.load({
       const [serviceReady, setServiceReady] = useState(null);
       const [view, setView] = useState('workspace');
       const [runtimeKey, setRuntimeKey] = useState(0);
+      const [indicator, setIndicator] = useState({ left: 0, width: 0 });
       const hostRef = useRef(null);
+      const tabsRef = useRef(null);
       const runtimeRef = useRef(null);
       const infoRef = useRef(null);
       const t = useMemo(() => ctx.locale.bind(NS), [ctx, localeTick]);
 
       useEffect(() => ctx.locale.subscribe(() => setLocaleTick((value) => value + 1)), [ctx]);
+
+      useLayoutEffect(() => {
+        const element = tabsRef.current;
+        if (!element) return undefined;
+        const update = () => {
+          const active = element.querySelector('.cvx-tab[data-active="true"]');
+          if (!active) return;
+          const parent = element.getBoundingClientRect();
+          const rect = active.getBoundingClientRect();
+          setIndicator({ left: rect.left - parent.left, width: rect.width });
+        };
+        update();
+        let observer = null;
+        if (typeof ResizeObserver === 'function') {
+          observer = new ResizeObserver(update);
+          observer.observe(element);
+        }
+        globalThis.window?.addEventListener('resize', update);
+        return () => {
+          if (observer) observer.disconnect();
+          globalThis.window?.removeEventListener('resize', update);
+        };
+      }, [view, localeTick]);
 
       function hostCall(payload) {
         const connection = ctx.get('connection');
@@ -610,7 +642,11 @@ const wrapper = String.raw`window.__ModuleLoader__.load({
           h('div', { className: 'cvx-bar-left' },
             h('span', { className: 'cvx-dot', 'data-state': dotState, title: serviceReady === false ? t('serviceDown') : t('serviceHint') }),
             h('span', { className: 'cvx-title' }, t('title')),
-            h('div', { className: 'cvx-tabs', role: 'tablist', 'aria-label': t('viewsLabel') },
+            h('div', { className: 'cvx-tabs', role: 'tablist', 'aria-label': t('viewsLabel'), ref: tabsRef },
+              h('span', {
+                key: 'indicator', className: 'cvx-tab-indicator', 'aria-hidden': 'true',
+                style: { width: indicator.width ? indicator.width + 'px' : '0px', transform: 'translateX(' + indicator.left + 'px)', opacity: indicator.width ? 1 : 0 },
+              }),
               views.map(([id, label]) => h('button', {
                 key: id, type: 'button', role: 'tab', className: 'cvx-tab',
                 'data-active': String(view === id), 'aria-selected': String(view === id),
