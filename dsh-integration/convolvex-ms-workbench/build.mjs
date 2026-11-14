@@ -94,6 +94,19 @@ footer { flex: none; padding: 0 20px 10px; }
 
 /* ---- micro-interactions: subtle motion, depth and focus feedback ---- */
 :host { --cvx-ease: cubic-bezier(.22, 1, .36, 1); }
+/* The spectrum library's right pane is taller than the panel at native
+   scale. Keep its own vertical scroll track inside the library shell. */
+.reference-pane {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding-right: 4px;
+}
+.reference-pane .reference-plot {
+  flex: 0 0 auto;
+  height: clamp(300px, 46vh, 480px);
+  max-height: none;
+}
 .panel, .analysis, .metric, .chart-panel, .dems-view {
   transition: transform .28s var(--cvx-ease), box-shadow .28s ease, border-color .28s ease;
 }
