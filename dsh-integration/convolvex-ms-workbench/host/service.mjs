@@ -13,7 +13,7 @@
  */
 import { spawn } from 'node:child_process';
 import fsp from 'node:fs/promises';
-import { realpathSync } from 'node:fs';
+import { existsSync, realpathSync } from 'node:fs';
 import net from 'node:net';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -55,10 +55,35 @@ async function freePort() {
   return port;
 }
 
+function looksLikeConvolvex(root) {
+  if (typeof root !== 'string' || !root) return false;
+  try {
+    return existsSync(path.join(root, 'pyproject.toml')) && existsSync(path.join(root, 'src', 'convolvex'));
+  } catch { return false; }
+}
+
+function resolveAppRoot(packageDir, config) {
+  const candidates = [];
+  if (typeof config.appRoot === 'string' && config.appRoot.trim()) candidates.push(config.appRoot);
+  if (process.env.CONVOLVEX_MS_ROOT) candidates.push(process.env.CONVOLVEX_MS_ROOT);
+  candidates.push(
+    path.join(packageDir, '..', '..'),
+    path.join(packageDir, 'vendor', 'convolvex-ms'),
+    path.join(process.cwd(), 'Convolvex_MS_1.1.0'),
+    path.join(process.cwd(), 'Convolvex-MS'),
+    process.cwd(),
+  );
+  for (const candidate of candidates) {
+    const resolved = path.resolve(candidate);
+    if (looksLikeConvolvex(resolved)) return resolved;
+  }
+  return path.resolve(config.appRoot || path.join(packageDir, '..', '..'));
+}
+
 export function createWorkbenchHost({ ctx, config = {}, packageDir } = {}) {
   let realPackageDir = packageDir;
   try { realPackageDir = realpathSync(packageDir); } catch { /* keep the resolved module path */ }
-  const appRoot = path.resolve(config.appRoot || path.join(realPackageDir, '..', '..'));
+  const appRoot = resolveAppRoot(realPackageDir, config);
   const configuredPython = config.python || defaultPython(appRoot);
   const python = path.isAbsolute(configuredPython) ? path.resolve(configuredPython) : configuredPython;
   const servers = new Map();

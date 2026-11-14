@@ -2,6 +2,15 @@
 
 在 DSH 左侧栏打开 **Convolvex-MS 质谱工作台**。插件直接复用 `Convolvex_MS_1.1.0/src/convolvex/web` 的原 Web 前端（HTML、CSS、`app.js`、`ms.js`、`dems.js`），由插件 Host 启动项目自带的 Python 服务，不另开端口给浏览器，也不需要访问令牌。
 
+## Windows / WSL
+
+- Windows 原生：先运行仓库的 `scripts/deploy_windows.ps1`，插件会优先使用
+  `<appRoot>\.venv\Scripts\python.exe`。
+- WSL2：先运行 `scripts/deploy_wsl.sh`（CUDA 加 `--cuda`），插件会使用
+  `<appRoot>/.venv/bin/python`。
+- 如果插件不在仓库的 `dsh-integration` 目录下，设置插件行 `appRoot` 或环境变量
+  `CONVOLVEX_MS_ROOT` 指向仓库根目录；插件不会修改全局 Python、PATH 或 CUDA 驱动。
+
 ## 安装
 
 npm 包：`dsh-convolvex-ms-workbench`（公开包）。在 DSH 中安装：
