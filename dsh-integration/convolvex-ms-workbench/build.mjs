@@ -246,11 +246,10 @@ const toolbarCss = `
 .cvx-tabs { position:relative; display:flex; align-items:center; gap:4px; padding:0; border-radius:8px; background:transparent; }
 .cvx-tab { position:relative; z-index:1; height:32px; padding:0 13px; border:1px solid transparent; border-radius:7px; background:transparent; color:var(--dsw-alias-label-secondary); font-size:14px; cursor:pointer; white-space:nowrap; }
 .cvx-tab:hover:not([data-active="true"]) { color:var(--dsw-alias-label-primary); border-color:var(--dsw-alias-border-l1); }
-.cvx-tab:focus { outline:none; }
-.cvx-tab:focus-visible { outline:2px solid color-mix(in srgb, var(--dsw-alias-brand-primary) 55%, transparent); outline-offset:2px; }
+.cvx-tab:focus, .cvx-tab:focus-visible { outline:none; }
 .cvx-tab[data-active="true"] { color:var(--dsw-alias-label-primary); background:transparent; font-weight:600; box-shadow:none; }
 .cvx-tab-indicator {
-  position:absolute; z-index:0; top:0; left:0; height:32px; border:1px solid color-mix(in srgb, var(--dsw-alias-brand-primary) 38%, var(--dsw-alias-border-l2)); border-radius:7px;
+  position:absolute; z-index:0; top:0; left:0; height:32px; border:1px solid var(--dsw-alias-border-l2); border-radius:7px;
   background:transparent;
   box-shadow:none;
   pointer-events:none;
