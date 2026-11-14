@@ -249,7 +249,7 @@ const toolbarCss = `
 .cvx-tab[data-active="true"] { color:var(--dsw-alias-label-primary); background:transparent; font-weight:600; box-shadow:none; }
 .cvx-tab-indicator {
   position:absolute; z-index:0; top:0; left:0; height:32px; border:1px solid color-mix(in srgb, var(--dsw-alias-brand-primary) 38%, var(--dsw-alias-border-l2)); border-radius:7px;
-  background:color-mix(in srgb, var(--dsw-alias-brand-primary) 5%, transparent);
+  background:transparent;
   box-shadow:0 2px 8px rgb(0 0 0 / .04);
   pointer-events:none;
   transition: transform .34s var(--cvx-ease), width .34s var(--cvx-ease), opacity .2s ease;
