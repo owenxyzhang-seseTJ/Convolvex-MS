@@ -1,3 +1,9 @@
+# 1.1.0-deploy.2 — Web workbench + DSH plugin
+
+- Added DEMS/LSV Web workbench: CSV/Excel/JSON import, spectrum library and NIST lookup, spectral/spectrotemporal inversion, DEMS quick processing and Tafel/FE reporting.
+- Added Windows native and WSL2 deployment notes, stdio MCP examples and cross-platform launch scripts.
+- Added the `dsh-convolvex-ms-workbench` DeepSeek Harness plugin and `convolvex_workbench` read-only agent tool.
+
 # 1.1.0 — MS and MCP
 
 - Added mass-spectrometry contracts, immutable datasets, scan/units/mask audit.

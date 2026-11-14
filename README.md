@@ -2,7 +2,7 @@
 
 面向质谱 / DEMS 的可审计数值后端，提供 Python API、MCP stdio/HTTP 和 Web 工作台。MIT 许可。
 
-此仓库保留两个版本：`v1.1.0` 是用户提供的原始源码快照；`v1.1.0-deploy.1` 是在 macOS、WSL2 与原生 Windows 部署、调试后的修复版。数值包版本保持 **1.1.0**，`deploy.1` 表示部署修订。Release 提供通用源码包及三个平台的源码部署包；运行仍需安装对应 Python 依赖。
+此仓库保留两个版本：`v1.1.0` 是用户提供的原始源码快照；`v1.1.0-deploy.2` 是在 macOS、WSL2 与原生 Windows 部署、调试后的修复版，并加入 DEMS/LSV Web 工作台和 DSH 插件。数值包版本保持 **1.1.0**，`deploy.2` 表示部署修订。Release 提供通用源码包及三个平台的源码部署包；运行仍需安装对应 Python 依赖。
 
 ## 已完成的本地验证
 
