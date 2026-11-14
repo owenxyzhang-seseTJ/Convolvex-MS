@@ -16,3 +16,17 @@ stdio MCP server.
 
 The connection is local only. Convolvex-MS returns numerical fits, not compound
 identities, and no tool creates or verifies a calibration.
+
+
+## Windows / WSL
+
+The patch contains checkout-specific absolute paths so it works as a local
+bundle. For a different checkout, edit `cordis.patch.yml`:
+
+- Windows: `command: C:\path\to\Convolvex-MS\.venv\Scripts\python.exe`
+  and a Windows `cwd`/`--workspace`.
+- WSL/Linux: `command: /path/to/Convolvex-MS/.venv/bin/python`
+  and the matching POSIX `cwd`/`--workspace`.
+
+The MCP stdio workspace must remain separate from the loopback HTTP service
+workspace; Convolvex-MS permits one active server per workspace directory.
