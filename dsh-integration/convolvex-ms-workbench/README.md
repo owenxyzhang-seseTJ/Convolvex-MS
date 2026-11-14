@@ -72,5 +72,4 @@ node --check client.js
 
 - 需要 Convolvex 的 Python 依赖已安装（`fastapi`、`uvicorn`、`numpy`、`scipy` 等）；插件不安装依赖。
 - 前端保持原 Web 工作台的中文界面；插件外层提示随 DSH 语言切换。
-- 原有的 `mcp__convolvex-ms__*` MCP 工具仍使用其独立的 `runtime/ms-stdio` 工作区，与本面板不是同一个数据目录；要与面板共享记录，请使用本插件的 `convolvex_workbench` 工具。
 - 浏览器可视化验证依赖 DSH 页面连接；无页面连接时只验证构建、Host RPC 与 Slot 注册。
