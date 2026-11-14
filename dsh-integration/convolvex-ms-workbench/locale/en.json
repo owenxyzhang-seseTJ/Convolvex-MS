@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Convolvex-MS workbench",
+    "description": "Opens the Convolvex-MS mass-spectrometry workbench from the left sidebar using the original web UI. Pick a DSH workspace at the top of the panel; datasets, run records and project files are stored under that workspace's .convolvex-ms directory. The convolvex_workbench agent tool reads run records from the same workspace. Numerical analysis reuses the original Convolvex service and solvers, and the background service stops when the plugin unloads.",
+    "detail": "docs/DETAIL.md"
+  }
+}

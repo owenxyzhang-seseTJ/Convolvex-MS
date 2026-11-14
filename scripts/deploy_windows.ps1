@@ -1,4 +1,4 @@
-param([string]$PythonVersion = '3.13.5', [switch]$InstallOnly)
+param([string]$PythonVersion = '3.13.13', [switch]$InstallOnly)
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)

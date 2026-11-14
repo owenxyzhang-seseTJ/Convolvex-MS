@@ -1,0 +1,96 @@
+{
+  "description": "Public NIST WebBook EI reference snapshots; synthetic demo signals are generated separately, not measured experiments.",
+  "spectra": [
+    {
+      "name": "Hydrogen",
+      "cas": "1333-74-0",
+      "formula": "H2",
+      "mz": [
+        1.0,
+        2.0
+      ],
+      "intensity": [
+        2.1002100210021,
+        100.0
+      ],
+      "intensity_unit": "% of base peak",
+      "spectrum_type": "EI mass spectrum",
+      "owner": "NIST Mass Spectrometry Data Center\nCollection (C) 2014 copyright by the U.S. Secretary of Commerce\non behalf of the United States of America. All rights reserved.",
+      "source": "NIST Chemistry WebBook, SRD 69",
+      "source_url": "https://webbook.nist.gov/cgi/cbook.cgi?ID=C1333740&Units=SI&Mask=200#Mass-Spec",
+      "record_id": "245692",
+      "filename": null,
+      "compound_id": "C1333740",
+      "download_url": "https://webbook.nist.gov/cgi/cbook.cgi?JCAMP=C1333740&Index=0&Type=Mass",
+      "retrieved_at": "2026-11-14T08:59:38.016854+00:00",
+      "usage": "Relative EI fragmentation reference; not an instrument sensitivity calibration or a confirmed identification.",
+      "display_name": "氢气 (H₂)"
+    },
+    {
+      "name": "Carbon monoxide",
+      "cas": "630-08-0",
+      "formula": "C O",
+      "mz": [
+        12.0,
+        16.0,
+        28.0,
+        29.0
+      ],
+      "intensity": [
+        4.700470047004701,
+        1.7001700170017002,
+        100.0,
+        1.2001200120012
+      ],
+      "intensity_unit": "% of base peak",
+      "spectrum_type": "EI mass spectrum",
+      "owner": "NIST Mass Spectrometry Data Center\nCollection (C) 2014 copyright by the U.S. Secretary of Commerce\non behalf of the United States of America. All rights reserved.",
+      "source": "NIST Chemistry WebBook, SRD 69",
+      "source_url": "https://webbook.nist.gov/cgi/cbook.cgi?ID=C630080&Units=SI&Mask=200#Mass-Spec",
+      "record_id": "19",
+      "filename": null,
+      "compound_id": "C630080",
+      "download_url": "https://webbook.nist.gov/cgi/cbook.cgi?JCAMP=C630080&Index=0&Type=Mass",
+      "retrieved_at": "2026-11-14T08:59:36.776823+00:00",
+      "usage": "Relative EI fragmentation reference; not an instrument sensitivity calibration or a confirmed identification.",
+      "display_name": "一氧化碳 (CO)"
+    },
+    {
+      "name": "Carbon dioxide",
+      "cas": "124-38-9",
+      "formula": "C O2",
+      "mz": [
+        12.0,
+        16.0,
+        22.0,
+        28.0,
+        29.0,
+        44.0,
+        45.0,
+        46.0
+      ],
+      "intensity": [
+        8.71087108710871,
+        9.61096109610961,
+        1.9001900190019,
+        9.810981098109812,
+        0.1000100010001,
+        100.0,
+        1.2001200120012,
+        0.4000400040004
+      ],
+      "intensity_unit": "% of base peak",
+      "spectrum_type": "EI mass spectrum",
+      "owner": "NIST Mass Spectrometry Data Center\nCollection (C) 2014 copyright by the U.S. Secretary of Commerce\non behalf of the United States of America. All rights reserved.",
+      "source": "NIST Chemistry WebBook, SRD 69",
+      "source_url": "https://webbook.nist.gov/cgi/cbook.cgi?ID=C124389&Units=SI&Mask=200#Mass-Spec",
+      "record_id": "69",
+      "filename": null,
+      "compound_id": "C124389",
+      "download_url": "https://webbook.nist.gov/cgi/cbook.cgi?JCAMP=C124389&Index=0&Type=Mass",
+      "retrieved_at": "2026-11-14T08:46:28.739735+00:00",
+      "usage": "Relative EI fragmentation reference; not an instrument sensitivity calibration or a confirmed identification.",
+      "display_name": "二氧化碳 (CO₂)"
+    }
+  ]
+}

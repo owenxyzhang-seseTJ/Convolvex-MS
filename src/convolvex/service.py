@@ -6,8 +6,8 @@ On restart, unfinished tasks are marked interrupted, never silently resumed.
 from contextlib import asynccontextmanager
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-import asyncio,hashlib,hmac,json,os,sqlite3,threading,time,uuid
-from fastapi import FastAPI,HTTPException,Request
+import asyncio,hashlib,hmac,json,os,re,sqlite3,threading,time,uuid
+from fastapi import FastAPI,HTTPException,Request,Query
 from fastapi.responses import FileResponse,JSONResponse
 from fastapi.staticfiles import StaticFiles
 from . import __version__
@@ -15,6 +15,25 @@ from .pipeline import Problem,execute,demo
 from .native import available as native_available
 from .gpu import capability
 from .solvers import CancelledError
+from .massspec import MSDataset, Contract
+from .web_ms import WebMSProject, execute_ms, ms_demo, dataset_summary, response_from_spectra
+from .web_import import ImportPayload, preview_import, import_table
+from .web_dems import DEMSDataset, DEMSProcessRequest, process_dems
+from .nist import lookup_spectrum, parse_jcamp, spectrum_catalog, ALIASES, enrich_spectrum
+from pydantic import Field
+
+
+class SpectrumImport(Contract):
+    filename: str = Field(min_length=1,max_length=256)
+    text: str = Field(max_length=2_000_000)
+    name: str | None = Field(default=None,min_length=1,max_length=96)
+    cas: str | None = Field(default=None,max_length=32)
+    formula: str | None = Field(default=None,max_length=128)
+
+
+class SpectrumResponse(Contract):
+    mz: list[float] = Field(min_length=1,max_length=128)
+    spectra: list[dict] = Field(min_length=1,max_length=32)
 
 
 def atomic_json(path,value):
@@ -58,7 +77,8 @@ class JobStore:
         try:
             if event.is_set(): raise CancelledError()
             self.update(id,"running")
-            result=execute(problem,cancel=event.is_set,callback=lambda p:self.progress.__setitem__(id,p))
+            execute_problem = execute_ms if isinstance(problem, WebMSProject) else execute
+            result=execute_problem(problem,cancel=event.is_set,callback=lambda p:self.progress.__setitem__(id,p))
             if event.is_set(): raise CancelledError()
             atomic_json(self.root/(id+".result.json"),result)
             self.update(id,"completed")
@@ -108,8 +128,80 @@ def create_app(data_dir=None):
     def load_demo(kind:str,seed:int=7):
         try: return demo(kind,seed)
         except ValueError as exc: raise HTTPException(422,str(exc))
+    @app.get("/api/v1/ms/demo")
+    def load_ms_demo(): return ms_demo()
+    @app.post("/api/v1/ms/dataset")
+    def inspect_ms_dataset(data:DEMSDataset):
+        return {"kind":"dems","dataset":data.model_dump(),"summary":dataset_summary(data)}
+    @app.post("/api/v1/ms/process")
+    def process_ms(payload:DEMSProcessRequest):
+        try:
+            data, req, fit = payload.dataset, None, None
+            if payload.job_id:
+                if store.get(payload.job_id)["status"] != "completed":
+                    raise HTTPException(409,"请先完成组分分析")
+                document=json.loads((store.root/(payload.job_id+".input.json")).read_text(encoding="utf-8"))
+                if document.get("schema_version") != "web-ms-1.0":
+                    raise ValueError("请选择原生 DEMS 分析记录")
+                project=WebMSProject.model_validate(document)
+                req=project.analysis
+                if data is not None:
+                    for name in ("time_s","mz","signal","signal_unit","valid","channel_offsets_s","time_origin","synthetic"):
+                        if getattr(data,name) != getattr(project.dataset,name):
+                            raise ValueError("当前质谱数据与分析记录不一致，请重新运行分析")
+                else:
+                    data=project.dataset
+                fit=json.loads((store.root/(payload.job_id+".result.json")).read_text(encoding="utf-8"))
+            report=process_dems(data,payload.settings,req,fit,payload.trace_points)
+            report["job_id"]=payload.job_id
+            return report
+        except (ValueError,TypeError,KeyError) as exc:
+            raise HTTPException(422,str(exc))
+    @app.post("/api/v1/ms/project/validate")
+    def validate_ms_project(project:WebMSProject):
+        return {"project":project.model_dump(),"summary":dataset_summary(project.dataset)}
+    @app.post("/api/v1/import/preview")
+    def inspect_import(payload:ImportPayload):
+        try: return preview_import(payload)
+        except (ValueError,TypeError,KeyError) as exc: raise HTTPException(422,str(exc))
+    @app.post("/api/v1/import/data")
+    def import_data(payload:ImportPayload):
+        try: return import_table(payload)
+        except (ValueError,TypeError,KeyError) as exc: raise HTTPException(422,str(exc))
+    @app.get("/api/v1/spectra/nist")
+    def nist_spectrum(query:str=Query(min_length=1,max_length=120)):
+        try:
+            resolved=ALIASES.get(query.strip().casefold(),query.strip())
+            key="C"+resolved.replace("-","") if re.fullmatch(r"\d{2,7}-\d{2}-\d",resolved) else resolved if re.fullmatch(r"C\d{3,12}",resolved) else None
+            cache=root/"nist-spectra"
+            if key and (cache/(key+".json")).is_file():
+                return enrich_spectrum(json.loads((cache/(key+".json")).read_text(encoding="utf-8")))
+            spectrum=lookup_spectrum(query)
+            if re.fullmatch(r"C\d{3,12}",spectrum.get("compound_id","")):
+                cache.mkdir(exist_ok=True)
+                with store.lock:
+                    atomic_json(cache/(spectrum["compound_id"]+".json"),spectrum)
+            return spectrum
+        except LookupError as exc: raise HTTPException(404,str(exc))
+        except ConnectionError as exc: raise HTTPException(502,str(exc))
+        except ValueError as exc: raise HTTPException(422,str(exc))
+    @app.get("/api/v1/spectra/catalog")
+    def get_spectrum_catalog(): return spectrum_catalog()
+    @app.post("/api/v1/spectra/import")
+    def import_spectrum(payload:SpectrumImport):
+        try:
+            spectrum=parse_jcamp(payload.text,filename=payload.filename)
+            if payload.name:spectrum.update(name=payload.name,display_name=payload.name)
+            if payload.cas:spectrum['cas']=payload.cas
+            if payload.formula:spectrum['formula']=payload.formula
+            return enrich_spectrum(spectrum)
+        except ValueError as exc: raise HTTPException(422,str(exc))
+    @app.post("/api/v1/ms/response")
+    def build_response(payload:SpectrumResponse):
+        try: return response_from_spectra(payload.mz,payload.spectra)
+        except (ValueError,KeyError,TypeError) as exc: raise HTTPException(422,str(exc))
     @app.post("/api/v1/jobs",status_code=202)
-    def submit(problem:Problem): return store.submit(problem)
+    def submit(problem:Problem|WebMSProject): return store.submit(problem)
     @app.get("/api/v1/jobs")
     def list_jobs(): return store.list()
     @app.get("/api/v1/jobs/{id}")

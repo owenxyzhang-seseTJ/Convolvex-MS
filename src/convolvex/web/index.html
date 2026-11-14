@@ -1,58 +1,213 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Convolvex</title><link rel="stylesheet" href="/assets/styles.css"></head>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f3f0">
+  <title>Convolvex · 研究工作台</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
 <body>
+<svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+  <symbol id="i-brand" viewBox="0 0 36 32"><path d="M2 25c5 0 5-18 11-18s6 18 12 18"/><path d="M12 25c5 0 5-18 11-18s6 18 11 18" opacity=".45"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M2 12h3l3-8 4 16 4-12 3 4h3"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 3v17h17M8 14l4-5 4 3 5-7"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="8" r="5"/><path d="m12 12 9 9m-4-4 3-3m-6 0 3-3"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v13m-5-5 5 5 5-5M4 17v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12l4 4v12a2 2 0 0 1-2 2ZM7 3v6h10V3M7 21v-8h10v8"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h4m4 0h8M4 17h8m4 0h4"/><circle cx="10" cy="7" r="2"/><circle cx="14" cy="17" r="2"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-13-2 20"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm0 0v6h6M8 13h8M8 17h5"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7V3m0 4h-4M4 17v4m0-4h4M5 8a8 8 0 0 1 13-3l2 2M4 17l2 2a8 8 0 0 0 13-3"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></symbol>
+</defs></svg>
+<a class="skip-link" href="#workspace">跳到工作区</a>
 <aside class="sidebar">
-  <a class="brand" href="/" aria-label="Convolvex"><span class="brand-mark"><i></i><i></i><i></i></span><span>Convolvex</span></a>
+  <a class="brand" href="/" aria-label="Convolvex 首页" title="Convolvex"><svg class="icon"><use href="#i-brand"/></svg><span>Convolvex</span></a>
   <nav aria-label="工作区导航">
-    <button class="nav active" data-view="workspace"><span>◫</span>工作台</button>
-    <button class="nav" data-view="model"><span>◇</span>算子</button>
-    <button class="nav" data-view="benchmarks"><span>↗</span>基准</button>
-    <button class="nav" data-view="records"><span>▤</span>记录</button>
+    <button class="nav active" data-view="workspace" aria-current="page" title="工作台"><svg class="icon"><use href="#i-grid"/></svg><span>工作台</span></button>
+    <button class="nav" data-view="spectra" title="NIST 标准谱与本地图谱"><svg class="icon"><use href="#i-layers"/></svg><span>标准图谱库</span></button>
+    <button class="nav" data-view="records" title="计算记录"><svg class="icon"><use href="#i-clock"/></svg><span>记录</span></button>
   </nav>
-  <div class="sidebar-bottom"><button id="authButton" class="plain">访问令牌</button><div class="engine-status"><i id="onlineDot"></i><span id="onlineStatus">连接中</span></div><div class="version">1.1.0</div></div>
+  <div class="sidebar-bottom">
+    <button id="authButton" class="nav" title="设置访问令牌" aria-label="设置访问令牌"><svg class="icon"><use href="#i-key"/></svg><span>令牌</span></button>
+    <div class="rail-status" title="连接状态"><i id="onlineDot"></i><span id="onlineStatus">连接中</span></div>
+    <span class="version">v1.1.0</span>
+  </div>
 </aside>
 <div class="shell">
-<header class="topbar"><div class="breadcrumb">研究空间 <span>/</span> <b id="viewLabel">工作台</b></div><div class="top-actions"><button id="importButton">导入</button><button id="exportProject">保存项目</button><button id="exportResult">导出结果</button><button id="runButton" class="primary"><span>▶</span>运行</button></div></header>
-<main>
-<section id="workspace" class="view">
-<div class="page-heading"><h1>卷积与反问题</h1><div class="tags"><span class="tag" id="modelTag">CONVOLUTION</span><span class="tag" id="sizeTag">480 × 1</span><span class="tag accent" id="dataTag">合成数据</span></div></div>
-<div class="work-grid">
-<aside class="controls">
-<section class="panel stack controls-panel"><div class="panel-heading"><h2>数据</h2><span class="index">01</span></div>
-<label>任务<select id="task"><option value="inverse">反卷积</option><option value="forward">正向卷积</option><option value="kernel">核估计</option><option value="blind">盲反卷积</option><option value="gcv">GCV</option><option value="bootstrap">Bootstrap</option></select></label>
-<label>模拟实验<select id="demo"><option value="signal">一维瞬态信号</option><option value="image">二维图像恢复</option><option value="volume">三维体数据</option><option value="dems">多通道谱与传输</option><option value="baseline">信号与背景分离</option><option value="poisson">泊松计数</option></select></label>
-<div class="button-row"><button id="loadDemo">载入实验</button><button id="editProject">JSON</button></div>
-<div class="file-drop" id="dropZone" tabindex="0" role="button" aria-label="导入数据"><span class="file-icon">↥</span><b id="fileName">signal.json</b><span>JSON · CSV</span></div>
-</section>
-<section class="panel controls-panel"><div class="panel-heading"><h2>前向模型</h2><span class="index">02</span></div>
-<label>输出支撑<select id="mode"><option value="causal">Causal</option><option value="full">Full</option><option value="same">Same</option><option value="valid">Valid</option><option value="circular">Circular</option></select></label>
-<div class="two-col"><label>边界<select id="boundary"><option value="zero">Zero</option><option value="reflect">Reflect</option></select></label><label>计算引擎<select id="engine"><option value="fft">FFT · CPU</option><option value="cpp">C++ · CPU</option><option value="direct">Direct</option><option value="overlap_add">Overlap-add</option></select></label></div>
-<label>采样体积<input id="sampleVolume" type="number" value="1" step="any" min="0.00000001"></label>
-<div class="kernel-box"><div class="mini-heading"><span>核函数</span><button id="editKernel" class="plain">编辑</button></div><svg id="kernelPlot" aria-label="核函数图" viewBox="0 0 260 80"></svg></div>
-</section>
-<section class="panel controls-panel"><div class="panel-heading"><h2>求解</h2><span class="index">03</span></div>
-<label>方法<select id="method"><option value="fista">FISTA</option><option value="tikhonov">Tikhonov · LSMR</option><option value="tv">TV · PDHG</option><option value="pars">PARS</option><option value="richardson_lucy">Richardson–Lucy</option><option value="wiener">Wiener</option><option value="gpu_fista">FISTA · GPU</option></select></label>
-<div class="two-col"><label id="alphaLabel">λ₂ / λTV<input id="alpha" type="number" value="0.003" min="0" step="any"></label><label>λ₁<input id="l1" type="number" value="0.0008" min="0" step="any"></label></div>
-<div class="two-col"><label>差分阶数<select id="order"><option value="0">0</option><option value="1" selected>1</option><option value="2">2</option></select></label><label>迭代上限<input id="iterations" type="number" value="1500" min="1" max="5000"></label></div>
-<div class="two-col"><label>损失<select id="loss"><option value="gaussian">Gaussian</option><option value="huber">Huber</option></select></label><label>容差<input id="tolerance" type="number" value="0.000001" step="any"></label></div>
-<label class="check"><input id="nonnegative" type="checkbox" checked><span>非负约束</span></label>
-</section>
-</aside>
-<div class="analysis">
-<div class="metrics"><section class="metric"><span>相对残差</span><strong id="residualMetric">—</strong></section><section class="metric"><span>迭代</span><strong id="iterationMetric">—</strong></section><section class="metric"><span>计算时间</span><strong id="timeMetric">—</strong></section><section class="metric"><span>状态</span><strong class="status-value" id="statusMetric">待运行</strong></section></div>
-<section class="panel stack chart-main"><div class="panel-heading"><h2>观测与重构</h2><div class="chart-tools"><select id="imageLayer" class="hidden" aria-label="图像显示"><option value="observed">观测</option><option value="predicted">重构</option></select><label class="compact">通道<select id="channel"><option value="0">1</option></select></label><button id="resetZoom" class="plain">复位</button></div></div><div id="observedPlot" class="plot" role="img" aria-label="观测与重构"></div><div id="observedLegend" class="legend"></div></section>
-<section class="panel source-panel"><div class="panel-heading"><h2>源信号</h2><div class="chart-tools"><select id="sourceLayer" class="hidden" aria-label="源图像显示"><option value="estimate">恢复</option><option value="truth">真值</option></select><label class="compact">分量<select id="sourceChannel"><option value="0">1</option></select></label></div></div><div id="sourcePlot" class="plot" role="img" aria-label="恢复源信号"></div><div id="sourceLegend" class="legend"></div></section>
-<div class="lower-grid"><section class="panel"><div class="panel-heading"><h2>残差</h2><span class="notation">y − A x</span></div><div id="residualPlot" class="plot small" role="img" aria-label="残差"></div></section><section class="panel"><div class="panel-heading"><h2>收敛</h2><span class="notation">Φ(x)</span></div><div id="historyPlot" class="plot small" role="img" aria-label="目标函数"></div></section></div>
-<section class="panel diagnostic"><div class="panel-heading"><h2>诊断</h2><button id="cancelButton" class="danger hidden">停止</button></div><div class="diagnostic-grid"><div><span>伴随误差</span><b id="adjointMetric">—</b></div><div><span>驻点残差</span><b id="stationarityMetric">—</b></div><div><span>输入指纹</span><b id="hashMetric">—</b></div></div><div id="warningBox" class="hidden"></div></section>
-</div></div></section>
-<section id="benchmarks" class="view hidden"><div class="page-heading"><h1>计算基准</h1><span class="tag" id="benchmarkHardware">CPU</span></div><section class="panel"><div class="panel-heading"><h2>执行时间</h2><span class="tag">FLOAT64</span></div><div id="benchmarkTable"></div></section><section class="panel benchmark-detail"><div class="panel-heading"><h2>运行环境</h2></div><pre id="benchmarkEnvironment"></pre></section></section>
-<section id="records" class="view hidden"><div class="page-heading"><h1>计算记录</h1><button id="refreshRecords">刷新</button></div><section class="panel"><div id="recordsTable"></div></section></section>
-</main>
-<footer><span id="footerStatus">READY</span><span>FLOAT64 <i>·</i> LOCAL</span></footer>
+  <header class="topbar">
+    <div class="product-title">本地工作空间<span class="product-divider"></span><div class="breadcrumb"><b id="viewLabel">工作台</b></div><button id="mobileAuth" class="icon-button mobile-auth" aria-label="设置访问令牌"><svg class="icon"><use href="#i-key"/></svg></button></div>
+    <div class="top-actions">
+      <button id="importButton"><svg class="icon"><use href="#i-upload"/></svg><span>导入数据</span></button>
+      <details class="project-menu" id="projectMenu"><summary title="项目选项"><svg class="icon"><use href="#i-code"/></svg><span>项目</span></summary><div class="menu-popover"><button id="exportProject" disabled><svg class="icon"><use href="#i-save"/></svg>保存项目 JSON</button><button id="openProjectEditor"><svg class="icon"><use href="#i-code"/></svg>编辑项目 JSON</button></div></details>
+      <button id="exportResult" disabled><svg class="icon"><use href="#i-download"/></svg><span>导出结果</span></button>
+      <span class="action-divider"></span>
+      <button id="cancelButton" class="danger hidden"><svg class="icon"><use href="#i-stop"/></svg><span>停止计算</span></button>
+      <button id="runButton" class="primary" disabled title="开始分析（Ctrl / ⌘ + Enter）"><svg class="icon"><use href="#i-play"/></svg><span id="runLabel">开始分析</span><kbd>⌘ ↵</kbd></button>
+    </div>
+  </header>
+  <main>
+    <section id="workspace" class="view" tabindex="-1">
+      <div class="work-grid">
+        <aside class="configuration-panel panel">
+          <div class="configuration-heading"><div><h2>数据</h2></div></div>
+          <fieldset id="configuration" class="controls"><legend class="sr-only">数据与分析设置</legend>
+            <div class="basic-data">
+              <button class="file-drop" id="dropZone" type="button" aria-label="导入 JSON 或 CSV 数据">
+                <span class="file-icon"><svg class="icon"><use href="#i-upload"/></svg></span>
+                <span class="file-description"><b>导入你的数据</b><span id="fileName">拖入文件，或点击选择</span></span>
+                <span class="file-type">CSV · Excel · JSON</span>
+              </button>
+              <button id="tryDemo" class="sample-button" type="button"><svg class="icon"><use href="#i-play"/></svg>载入示例<svg class="icon"><use href="#i-chevron"/></svg></button>
+              <p id="dataHelp" class="data-help">示例已就绪，点击「开始分析」即可体验。</p>
+            </div>
+            <section id="msSetup" class="ms-setup hidden"><div id="msDataSummary" class="ms-data-summary"></div><div class="ms-section-title"><span>候选组分</span><button id="openLibrary" class="plain" type="button">从谱库添加</button></div><div id="speciesList" class="species-list"></div><p id="msResponseHint" class="ms-response-hint"></p><button id="importResponse" class="plain" type="button">导入响应矩阵</button></section>
+            <div class="recommended-scheme"><span class="scheme-icon"><svg class="icon"><use href="#i-check"/></svg></span><div><span id="schemeLabel">当前分析方案</span><strong id="recommendedMethod">FISTA</strong><small>参数已预设，可直接开始</small></div></div>
+            <details id="advancedSettings" class="expert-settings">
+              <summary><svg class="icon"><use href="#i-sliders"/></svg><span>高级设置</span><svg class="icon chevron"><use href="#i-chevron"/></svg></summary>
+              <div class="expert-content">
+                <div class="advanced-task"><label>分析任务<select id="task"><option value="inverse">反卷积</option><option value="forward">正向卷积</option><option value="kernel">核估计</option><option value="blind">盲反卷积</option><option value="gcv">GCV</option><option value="bootstrap">Bootstrap</option></select></label><label>更多示例<div class="input-action"><select id="demo" aria-label="示例实验"><option value="dems" selected>DEMS 多通道与传输</option><option value="signal">一维瞬态信号</option><option value="image">二维图像恢复</option><option value="volume">三维体数据</option><option value="baseline">信号与背景分离</option><option value="poisson">泊松计数</option></select><button id="loadDemo" title="载入选中的示例实验" type="button">载入</button></div></label></div>
+            <details class="control-section" id="modelSection">
+              <summary><span class="step">02</span><h3>前向模型</h3><span class="section-meta" id="modelSummary">Causal · FFT</span><svg class="icon chevron"><use href="#i-chevron"/></svg></summary>
+              <div class="control-body">
+                <div class="ms-only hidden"><label>DEMS 模型<select id="msModel"><option value="spectral">谱分离（保留传输响应）</option><option value="spectrotemporal">谱–时间联合反演</option></select></label><label>传输核约定<select id="msKernelConvention"><option value="discrete">离散权重</option><option value="density">连续响应密度 × Δt</option></select></label><label class="check"><input id="msBlankEnabled" type="checkbox"><span>按空白区间逐通道扣背景</span></label><div class="two-col"><label>空白起点 / s<input id="msBlankStart" type="number" step="any" placeholder="可选"></label><label>空白终点 / s<input id="msBlankStop" type="number" step="any" placeholder="可选"></label></div><label>空白背景模型<select id="msBlankModel"><option value="constant">常数背景</option><option value="linear">线性漂移</option></select></label></div>
+                <div class="legacy-only">
+                <label>输出支撑<select id="mode"><option value="causal">Causal</option><option value="full">Full</option><option value="same">Same</option><option value="valid">Valid</option><option value="circular">Circular</option></select></label>
+                <div class="two-col"><label>边界<select id="boundary"><option value="zero">Zero</option><option value="reflect">Reflect</option></select></label><label>计算引擎<select id="engine"><option value="fft">FFT · CPU</option><option value="cpp">C++ · CPU</option><option value="direct">Direct</option><option value="overlap_add">Overlap-add</option></select></label></div>
+                <label>采样体积<input id="sampleVolume" type="number" value="1" step="any" min="0.00000001" required></label>
+                </div>
+                <div class="kernel-box"><div class="mini-heading"><span>响应核 <i>h(t)</i></span><button id="editKernel" type="button" class="plain">编辑核函数</button></div><svg id="kernelPlot" aria-label="核函数图" role="img" viewBox="0 0 260 80"></svg></div>
+              </div>
+            </details>
+
+            <details class="control-section" open>
+              <summary><span class="step">03</span><h3>求解设置</h3><svg class="icon chevron"><use href="#i-chevron"/></svg></summary>
+              <div class="control-body">
+                <label>求解方法<select id="method"><option value="fista">FISTA</option><option value="tikhonov">Tikhonov · LSMR</option><option value="tv">TV · PDHG</option><option value="channel_pars">逐通道背景 · PARS</option><option value="pars">PARS</option><option value="richardson_lucy">Richardson–Lucy</option><option value="wiener">Wiener</option><option value="gpu_fista">FISTA · GPU</option></select></label>
+                <div class="two-col"><label id="alphaLabel"><span id="alphaName">λ₂ 正则化</span><input id="alpha" type="number" value="0.003" min="0" step="any" required></label><label>λ₁ 稀疏约束<input id="l1" type="number" value="0.0008" min="0" step="any" required></label></div>
+                <label class="check"><input id="nonnegative" type="checkbox" checked><span>非负约束</span><span class="field-hint">x ≥ 0</span></label>
+                <label id="msTVLabel" class="hidden">TV 权重<input id="msTVWeight" type="number" min="0" step="any" value="0.01"></label>
+                <details class="advanced-settings"><summary>高级参数<svg class="icon chevron"><use href="#i-chevron"/></svg></summary><div class="advanced-body">
+                  <div class="two-col"><label>差分阶数<select id="order"><option value="0">0</option><option value="1" selected>1</option><option value="2">2</option></select></label><label>迭代上限<input id="iterations" type="number" value="1500" min="1" max="5000" step="1" required></label></div>
+                  <div class="two-col"><label>损失函数<select id="loss"><option value="gaussian">Gaussian</option><option value="huber">Huber</option></select></label><label>收敛容差<input id="tolerance" type="number" value="0.000001" min="0.000000000000001" step="any" required></label></div>
+                </div></details>
+              </div>
+            </details>
+
+                <div class="advanced-project"><button id="editProject" class="plain" type="button"><svg class="icon"><use href="#i-code"/></svg>编辑完整项目 JSON</button></div>
+              </div>
+            </details>
+          </fieldset>
+          <div class="configuration-foot"><span id="configState"><i></i>等待载入数据</span><span class="mono">FLOAT64</span></div>
+          <div class="configuration-note"><svg class="icon"><use href="#i-info"/></svg><span>首次使用可直接试用示例。专业参数保留在高级设置中。</span></div>
+        </aside>
+        <div class="analysis" id="analysisArea">
+          <div class="metrics" aria-label="求解概览" aria-live="polite">
+            <section class="metric"><div class="metric-label">拟合误差<svg class="icon"><use href="#i-wave"/></svg></div><strong id="residualMetric">—</strong><span class="metric-caption">观测与拟合的相对偏差</span></section>
+            <section class="metric"><div class="metric-label">迭代次数<svg class="icon"><use href="#i-layers"/></svg></div><strong id="iterationMetric">—</strong><span class="metric-caption" id="iterationLimit">上限 1,500 次</span></section>
+            <section class="metric"><div class="metric-label">计算时间<svg class="icon"><use href="#i-clock"/></svg></div><strong id="timeMetric">—</strong><span class="metric-caption">求解器耗时</span></section>
+            <section class="metric status-metric"><div class="metric-label">求解状态<span class="status-indicator"></span></div><strong class="status-value" id="statusMetric" data-state="idle">待运行</strong><span class="metric-caption" id="statusCaption">点击开始分析查看结果</span></section>
+          </div>
+          <div id="analysisTabs" class="analysis-tabs hidden" role="tablist" aria-label="分析视图"><button id="fitTab" role="tab" aria-selected="true" aria-controls="observedPanel" type="button">信号与拟合</button><button id="demsTab" role="tab" aria-selected="false" aria-controls="demsView" type="button">DEMS 快速处理</button></div>
+          <section id="demsView" class="dems-view hidden" aria-label="DEMS 快速处理">
+            <form id="demsForm">
+              <div class="dems-heading"><h2>DEMS 与 LSV 联合分析</h2><button id="attachEC" class="plain" type="button">导入 LSV / EC</button></div>
+              <p class="dems-workflow">导入数据与 LSV → 空白与时间对齐 → 候选谱分离 → 标定与极化曲线</p>
+              <p id="demsDataStatus" class="dems-note"></p>
+              <div class="dems-controls"><label>MS 起始时间 / s<input id="demsStart" type="number" step="any" required></label><label>MS 结束时间 / s<input id="demsStop" type="number" step="any" required></label><label>质荷比<select id="demsMz"></select></label><label>分析组分<select id="demsSpecies"></select></label></div>
+              <div class="dems-query"><label>查询方式<select id="demsLookup"><option value="time">按时间 / s</option><option value="potential">按电位 / V</option><option value="current">按电化学电流 / A</option></select></label><label><span id="demsValueLabel">目标时间 / s</span><input id="demsValue" type="number" step="any" required></label><label id="demsToleranceLabel" class="hidden">允许偏差<input id="demsTolerance" type="number" min="0" step="any" value="0.01"></label><button id="processDEMS" class="primary" type="submit">更新分析</button></div>
+              <details class="dems-advanced"><summary>电位校正与定量设置<svg class="icon chevron"><use href="#i-chevron"/></svg></summary><div class="dems-controls">
+                <label>电位参比<input id="demsReference" placeholder="例如 RHE、Ag/AgCl"></label><label>平衡电位 / V<input id="demsEquilibrium" type="number" step="any" placeholder="可选，用于过电位"></label><label>未补偿电阻 / Ω<input id="demsResistance" type="number" min="0" step="any" value="0"></label><label>电极面积 / cm²<input id="demsArea" type="number" min="0" step="any" placeholder="可选"></label>
+                <label>EC 时钟偏移 / s<input id="demsOffset" type="number" step="any" value="0"></label><label>传输纯延迟 / s<input id="demsDelay" type="number" min="0" step="any" value="0"></label><label>附加信号基线<input id="demsBaseline" type="number" step="any" value="0"></label><label>离子信号极性<select id="demsPolarity"><option value="1">正信号</option><option value="-1">负信号（反向）</option></select></label><label>Tafel 信号来源<select id="demsBasis"><option value="species">所选分离组分</option><option value="channel">原始 m/z 通道</option></select></label>
+                <label>Tafel 电位下限 / V<input id="demsMinPotential" type="number" step="any" placeholder="可选"></label><label>Tafel 电位上限 / V<input id="demsMaxPotential" type="number" step="any" placeholder="可选"></label><label>电位分箱数<input id="demsBins" type="number" min="3" max="80" value="10"></label><label>反应方向<select id="demsDirection"><option value="cathodic">还原（阴极）</option><option value="anodic">氧化（阳极）</option></select></label>
+              </div><p class="dems-note">纯延迟用于谱分离曲线的 t<sub>EC</sub> = t<sub>MS</sub> − τ 对齐；已用传输核联合反演时不重复施加。空白区间扣背景在左侧高级设置中配置，修改后需重新分析。</p><label class="check"><input id="demsSteady" type="checkbox"><span>所选 Tafel 区间满足稳态／准稳态、单向扫描及动力学控制条件</span></label><label class="check"><input id="demsComplete" type="checkbox"><span>已确认所选积分窗口完整，或传输校正适用于此区间</span></label>
+              <details class="dems-calibration"><summary>所选组分的本机标定</summary><p class="dems-note">灵敏度对应当前响应列的参考通道，须包含收集效率。切换组分可分别保存标定。</p><div class="dems-controls">
+                <label>有效灵敏度 / C·mol⁻¹<input id="demsSensitivity" type="number" min="0" step="any" placeholder="标准实验提供"></label><label>反应电子数<input id="demsElectrons" type="number" min="1" max="64" step="1" placeholder="取决于反应路径"></label><label>参考 m/z<select id="demsReferenceMz"></select></label><label>标定记录名称<input id="demsCalibrationId" placeholder="例如 CO-standard-01"></label><label>仪器标识<input id="demsInstrument" placeholder="与本机标准实验一致"></label><label>实验条件标识<input id="demsConditions" placeholder="与标定条件一致"></label>
+              </div><label class="check"><input id="demsCalibrationConfirmed" type="checkbox"><span>该标定来自本机标准实验，已包含收集效率，适用于当前响应模型</span></label><p id="demsCalibrationState" class="dems-note"></p><button id="saveDEMSCalibration" type="button">保存组分标定</button></details></details>
+            </form>
+            <p id="demsError" class="dems-error" role="alert"></p>
+            <div id="demsResults" class="hidden" aria-live="polite">
+              <p id="lsvSummary" class="dems-note"></p>
+              <div class="dems-charge-metrics"><div><span>电化学总电荷</span><strong id="demsECCharge">—</strong><small id="demsECDirection">原始 EC 时间轴积分</small></div><div><span>物质转化电荷</span><strong id="demsProductCharge">—</strong><small id="demsAmount">需要本机标定</small></div><div><span>法拉第效率</span><strong id="demsFE">—</strong><small>相对于所选方向总电荷</small></div></div>
+              <div class="dems-plots"><section><div class="dems-heading"><h3>LSV 总电流</h3><span id="lsvCurrentUnit"></span></div><div id="lsvPlot" class="dems-plot" role="img" aria-label="原始 LSV 电流与电位曲线"></div></section><section><div class="dems-heading"><h3 id="productPolarizationTitle">组分极化曲线</h3></div><div id="productPolarizationPlot" class="dems-plot" role="img" aria-label="分离组分的极化曲线"></div><p id="productPolarizationNote" class="dems-note"></p></section></div>
+              <div class="dems-plots"><section><div class="dems-heading"><h3>质谱伏安曲线</h3><span id="demsSignalSlope"></span></div><div id="demsPotentialPlot" class="dems-plot" role="img" aria-label="电位与质谱信号关联图"></div></section><section><div class="dems-heading"><h3 id="demsTafelTitle">Tafel 分析</h3><strong id="demsTafelSlope">—</strong></div><div id="demsTafelPlot" class="dems-plot" role="img" aria-label="电位与电流对数及线性拟合"></div><p id="demsTafelQuality" class="dems-note"></p></section></div>
+              <div class="dems-heading"><h3>查询结果</h3><span id="demsLookupSummary"></span></div><div id="demsLookupTable" class="table-scroll"></div>
+              <div class="dems-heading"><h3>该 m/z 下的候选组分贡献</h3><span id="demsIonIntegral"></span></div><div id="demsComponents" class="table-scroll"></div>
+              <p id="demsQuantificationNote" class="dems-note"></p><ul id="demsWarnings" class="dems-warnings"></ul><div class="dems-export"><button id="exportLSV" type="button">导出原始 LSV CSV</button><button id="exportDEMSCSV" type="button">导出联合数据 CSV</button><button id="exportDEMS" type="button">导出分析报告 JSON</button></div>
+            </div>
+            <p id="demsEmpty" class="dems-note">选择时间区间后更新分析。电位、电流和 m/z 会按记录的时间关联。</p>
+          </section>
+          <div class="signal-grid">
+            <section class="panel chart-panel chart-main" id="observedPanel"><div class="panel-heading"><div class="chart-title"><span class="chart-icon"><svg class="icon"><use href="#i-wave"/></svg></span><div><h2 id="observedTitle">观测信号</h2><span>OBSERVATION & FIT</span></div></div><div class="chart-tools"><select id="imageLayer" class="hidden" aria-label="图像显示"><option value="observed">观测</option><option value="predicted">重构</option></select><label class="compact">通道<select id="channel"><option value="0">1</option></select></label><button id="resetZoom" class="icon-button" title="重置图表缩放" aria-label="重置图表缩放"><svg class="icon"><use href="#i-refresh"/></svg></button></div></div><div id="observedPlot" class="plot" role="img" aria-label="观测与重构曲线"></div><div class="chart-bottom"><div id="observedLegend" class="legend"></div><span class="plot-hint">滚轮缩放</span></div></section>
+            <section class="panel chart-panel source-panel" id="sourcePanel"><div class="panel-heading"><div class="chart-title"><span class="chart-icon warm"><svg class="icon"><use href="#i-chart"/></svg></span><div><h2 id="sourceTitle">还原结果</h2><span>SOURCE RECOVERY</span></div></div><div class="chart-tools"><select id="sourceLayer" class="hidden" aria-label="源图像显示"><option value="estimate">恢复</option><option value="truth">真值</option></select><label class="compact">分量<select id="sourceChannel"><option value="0">1</option></select></label></div></div><div id="sourcePlot" class="plot" role="img" aria-label="源信号恢复曲线"></div><div class="chart-bottom"><div id="sourceLegend" class="legend"></div><span class="plot-hint">滚轮缩放</span></div></section>
+          </div>
+          <details class="analysis-details" id="analysisDetails"><summary><svg class="icon"><use href="#i-chart"/></svg><span>分析详情</span><span class="details-hint">残差、收敛与数值诊断</span><svg class="icon chevron"><use href="#i-chevron"/></svg></summary><div class="analysis-details-body">
+          <div class="lower-grid">
+            <section class="panel secondary-chart"><div class="panel-heading"><h2><span class="chart-dot"></span>残差分布</h2><span class="notation">y − Ax</span></div><div id="residualPlot" class="plot small" role="img" aria-label="残差曲线"></div></section>
+            <section class="panel secondary-chart"><div class="panel-heading"><h2><span class="chart-dot amber"></span>收敛过程</h2><span class="notation">Φ(x)</span></div><div id="historyPlot" class="plot small" role="img" aria-label="目标函数收敛曲线"></div></section>
+          </div>
+          <section class="panel diagnostic"><div class="diagnostic-heading"><svg class="icon"><use href="#i-check"/></svg><h2>求解诊断</h2></div><div class="diagnostic-grid"><div><span>伴随误差</span><b id="adjointMetric">—</b></div><div><span>驻点残差</span><b id="stationarityMetric">—</b></div><div><span>数据来源</span><b id="hashMetric">—</b></div></div><div id="warningBox" class="hidden" role="status"></div></section>
+          </div></details>
+        </div>
+      </div>
+    </section>
+    <section id="records" class="view hidden"><div class="page-heading"><div><div class="eyebrow">RUN HISTORY</div><h1>计算记录</h1><p>打开已完成的分析，继续查看结果。</p></div><button id="refreshRecords"><svg class="icon"><use href="#i-refresh"/></svg>刷新记录</button></div><section class="panel table-panel"><div id="recordsTable" class="table-scroll"></div></section></section>
+<section id="spectra" class="view hidden" aria-labelledby="spectrumTitle"><div class="library-shell">
+  <div class="panel-heading"><div><h2 id="spectrumTitle">标准图谱库</h2><p class="dialog-description">NIST WebBook 公开 EI 图谱 · 支持导入本地 JCAMP-DX</p></div><button id="closeSpectrum" class="icon-button" type="button" aria-label="返回工作台"><svg class="icon"><use href="#i-close"/></svg></button></div>
+  <div class="spectrum-search"><input id="spectrumQuery" type="search" placeholder="物质名、分子式或 CAS，例如 CO2、ethanol" aria-label="物质名或 CAS"><button id="searchSpectrum" type="button">调取图谱</button><button id="localSpectrum" type="button">导入本地谱</button></div>
+  <div class="library-grid"><aside class="catalog-pane"><div id="catalogFilters" class="catalog-filters"></div><div id="compoundCatalog" class="compound-catalog"></div></aside><div class="reference-pane">
+  <p id="spectrumStatus" role="status" class="spectrum-status">选择物质后调取图谱。</p>
+  <div id="spectrumChoices" class="spectrum-choices hidden"></div>
+  <div id="referencePlot" class="reference-plot" role="img" aria-label="参考质谱棒图"></div>
+  <div id="spectrumSource" class="spectrum-source"></div>
+  <label class="spectrum-name-label">候选组分名称<input id="spectrumName" maxlength="96" placeholder="从谱文件读取；可填写明确的物质名称" disabled></label>
+  <div class="dialog-actions"><span id="spectrumError" role="alert"></span><button id="downloadSpectrum" type="button" disabled>导出谱数据</button><button id="addSpectrum" type="button" class="primary" disabled>添加候选组分</button></div>
+  </div></div>
+</div></section>
+  </main>
+  <footer><span class="footer-state"><i></i><span id="footerStatus" role="status">CONNECTING</span></span><span class="footer-help">快捷运行 <kbd id="shortcutHint">⌘ Enter</kbd><span class="footer-divider"></span>本地工作空间<span class="footer-divider"></span>FLOAT64</span></footer>
 </div>
-<dialog id="editor"><form method="dialog"><div class="panel-heading"><h2 id="editorTitle">项目</h2><button class="plain" value="cancel" aria-label="关闭">✕</button></div><textarea id="editorText" spellcheck="false" aria-label="JSON编辑器"></textarea><div class="dialog-actions"><span id="editorError" role="alert"></span><button value="cancel">取消</button><button id="applyEditor" type="button" class="primary">应用</button></div></form></dialog>
-<dialog id="csvDialog"><form method="dialog"><div class="panel-heading"><h2>CSV 数据</h2><button class="plain" aria-label="关闭">✕</button></div><label>观测列<select id="csvY"></select></label><label>时间列<select id="csvTime"></select></label><label>响应核<select id="csvKernel"></select></label><div class="dialog-actions"><button id="applyCSV" class="primary" type="button">导入</button></div></form></dialog>
-<input type="file" id="fileInput" accept=".json,.csv" hidden>
-<div id="toast" role="status" class="toast hidden"></div>
+<dialog id="editor" aria-labelledby="editorTitle"><form method="dialog"><div class="panel-heading"><div><div class="eyebrow">PROJECT EDITOR</div><h2 id="editorTitle">项目</h2></div><button class="icon-button" value="cancel" aria-label="关闭编辑器"><svg class="icon"><use href="#i-close"/></svg></button></div><textarea id="editorText" spellcheck="false" aria-label="JSON 编辑器"></textarea><div class="dialog-actions"><span id="editorError" role="alert"></span><button value="cancel">取消</button><button id="applyEditor" type="button" class="primary">应用配置</button></div></form></dialog>
+<dialog id="csvDialog" aria-labelledby="csvTitle"><form method="dialog"><div class="panel-heading"><div><div class="eyebrow">IMPORT DATA</div><h2 id="csvTitle">映射 CSV 数据列</h2></div><button class="icon-button" aria-label="关闭导入"><svg class="icon"><use href="#i-close"/></svg></button></div><p class="dialog-description">选择观测和时间列，响应核也可以在导入后编辑。</p><label>观测列<select id="csvY"></select></label><label>时间列<select id="csvTime"></select></label><label>响应核<select id="csvKernel"></select></label><div class="dialog-actions"><button value="cancel">取消</button><button id="applyCSV" class="primary" type="button">导入数据</button></div></form></dialog>
+<input type="file" id="fileInput" accept=".json,.csv,.tsv,.txt,.xlsx,.jdx,.dx,.jcamp" hidden>
+<input type="file" id="responseInput" accept=".json,.csv" hidden>
+<input type="file" id="spectrumInput" accept=".json,.jdx,.dx,.jcamp,.csv,.tsv,.txt" hidden>
+<input type="file" id="ecInput" accept=".csv,.tsv,.txt,.xlsx" hidden>
+
+<dialog id="importDialog" aria-labelledby="importTitle"><form method="dialog">
+  <div class="panel-heading"><div><h2 id="importTitle">导入数据</h2><p id="importSummary" class="dialog-description"></p></div><button class="icon-button" aria-label="关闭数据导入"><svg class="icon"><use href="#i-close"/></svg></button></div>
+  <div id="sheetRow" class="hidden"><label>工作表<select id="importSheet"></select></label></div>
+  <div id="importPreview" class="table-scroll import-preview"></div>
+  <div id="lsvTimingFields" class="mapping-grid hidden"><label>LSV 扫描速率 / mV·s⁻¹<input id="importScanRate" type="number" min="0" step="any" placeholder="无时间列时必填"></label><label>LSV 起始时刻 / s<input id="importLSVStart" type="number" step="any" value="0"></label><p class="dems-note">仅对恒定速率、严格单向扫描重建时间；与 MS 使用共同起点。</p></div>
+  <label id="spectrumImportNameRow" class="hidden">标准谱的物质名称<input id="importSpeciesName" maxlength="96" placeholder="例如：二氧化碳 (CO₂)"></label>
+  <details class="import-mapping"><summary>检查列映射与单位<svg class="icon chevron"><use href="#i-chevron"/></svg></summary><div class="mapping-grid">
+    <label>数据类型<select id="importMode"><option value="dems">DEMS 多通道时间序列</option><option value="electrochemistry">补充电位／电流记录</option><option value="series">一维时间信号</option><option value="spectrum">m/z–强度参考图谱</option></select></label>
+    <label>时间列<select id="importTime"></select></label>
+    <label>时间单位<select id="importTimeUnit"><option value="s">秒 / s</option><option value="ms">毫秒 / ms</option><option value="min">分钟 / min</option></select></label>
+    <label>信号单位<select id="importUnit"><option value="auto">按各列单位识别</option><option value="a.u.">相对值 / a.u.</option><option value="A">A</option><option value="mA">mA</option><option value="uA">µA</option><option value="nA">nA</option><option value="pA">pA</option><option value="counts">counts</option><option value="Pa">Pa</option><option value="mbar">mbar</option></select></label>
+    <div class="mapping-signals"><span>信号列</span><div id="importSignals" class="import-signals"></div></div>
+    <label>m/z（按选中列顺序）<input id="importMasses" type="text" placeholder="2, 28, 44"></label>
+    <label>电位列<select id="importPotential"></select></label><label>电位单位<select id="importPotentialUnit"><option value="V">V</option><option value="mV">mV</option></select></label><label>电化学电流列<select id="importCurrent"></select></label><label>电化学电流单位<select id="importCurrentUnit"><option value="A">A</option><option value="mA">mA</option><option value="uA">µA</option><option value="nA">nA</option><option value="pA">pA</option><option value="A/cm2">A/cm²</option><option value="mA/cm2">mA/cm²</option></select></label><label>电极面积 / cm²<input id="importArea" type="number" min="0" step="any" placeholder="电流密度导入时必填"></label>
+    <label class="check"><input id="importSynthetic" type="checkbox"><span>该文件为合成／示例数据</span></label>
+  </div></details>
+  <div class="dialog-actions"><span id="importError" role="alert"></span><button value="cancel">取消</button><button id="confirmImport" class="primary" type="button">导入数据</button></div>
+</form></dialog>
+
+
+<div id="toast" role="status" class="toast hidden"><span id="toastText"></span><button id="dismissToast" class="icon-button" aria-label="关闭提示"><svg class="icon"><use href="#i-close"/></svg></button></div>
 <script src="/assets/app.js" defer></script>
-</body></html>
+<script src="/assets/dems.js" defer></script>
+<script src="/assets/ms.js" defer></script>
+</body>
+</html>

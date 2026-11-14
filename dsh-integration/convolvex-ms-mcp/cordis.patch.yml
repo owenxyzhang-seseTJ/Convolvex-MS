@@ -1,0 +1,22 @@
+- insert:
+    - id: convolvex-ms-mcp
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: convolvex-ms
+        transport: stdio
+        command: /Users/xiaoyuzhang/Desktop/卷积/Convolvex_MS_1.1.0/.venv/bin/python
+        args:
+          - '-u'
+          - '-m'
+          - convolvex.mcp_server
+          - '--workspace'
+          - /Users/xiaoyuzhang/Desktop/卷积/Convolvex_MS_1.1.0/runtime/ms-stdio
+        cwd: /Users/xiaoyuzhang/Desktop/卷积/Convolvex_MS_1.1.0
+        env:
+          OPENBLAS_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+          VECLIB_MAXIMUM_THREADS: '1'
+        startupTimeoutMs: 30000
+        toolCallTimeoutMs: 120000
+        failOnStartupError: true

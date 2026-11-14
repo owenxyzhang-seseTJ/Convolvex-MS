@@ -66,11 +66,12 @@ class MSDataset(Contract):
             raise ValueError("pressure requires matching length and an explicit unit")
         if self.pressure is None and self.pressure_unit is not None:
             raise ValueError("pressure_unit without pressure")
-        if (self.ec_time_s is None) != (self.current_A is None):
-            raise ValueError("EC time and current must be supplied together")
+        potential = getattr(self, "potential_V", None)
+        if (self.ec_time_s is None) != (self.current_A is None and potential is None):
+            raise ValueError("EC time requires current and/or potential on the same declared time origin")
         if self.ec_time_s is not None:
-            if len(self.ec_time_s)<2 or len(self.ec_time_s)!=len(self.current_A) or np.any(np.diff(self.ec_time_s)<=0):
-                raise ValueError("EC time/current must be paired, strictly increasing, and on the declared common time origin")
+            if len(self.ec_time_s)<2 or np.any(np.diff(self.ec_time_s)<=0) or any(v is not None and len(v)!=len(self.ec_time_s) for v in (self.current_A,potential)):
+                raise ValueError("EC time/current/potential must be paired and strictly increasing")
             if len(self.ec_time_s)>200_000:
                 raise ValueError("EC array exceeds limit")
         if self.channel_offsets_s is not None and len(self.channel_offsets_s) != c:

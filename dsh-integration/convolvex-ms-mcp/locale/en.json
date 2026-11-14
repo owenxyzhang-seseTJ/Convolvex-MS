@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Convolvex-MS mass-spectrometry tools",
+    "description": "Connects the local Convolvex-MS MCP server (Settings → Plugins, then describe an MS or DEMS task in chat). It exposes 15 tools as mcp__convolvex-ms__* for importing user-provisioned JSON/CSV from runtime/ms-stdio/inbox, checking the sampling time axis, fitting blank-window backgrounds, running spectral, spectrotemporal and mass-profile jobs, reading result arrays, integrating EC charge, and quantifying only with an operator-provisioned verified calibration. Server processes and files stay on this Mac; prompts and tool results are sent to your configured model provider. Fits are numerical estimates, not compound identities; a completed job is not proof of convergence; quantification needs a matching calibration and a confirmed complete window.",
+    "detail": "docs/DETAIL.md"
+  }
+}

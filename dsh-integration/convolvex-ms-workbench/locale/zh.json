@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Convolvex-MS 质谱工作台",
+    "description": "在左侧栏打开 Convolvex-MS 质谱工作台，直接复用原 Web 界面。面板顶部选择 DSH 工作区后，数据集、运行记录和项目文件保存到该工作区的 .convolvex-ms 目录；Agent 可通过 convolvex_workbench 工具读取同一工作区的运行记录。数值分析复用原 Convolvex 服务与求解器，插件卸载后后台服务停止。",
+    "detail": "docs/DETAIL.zh.md"
+  }
+}

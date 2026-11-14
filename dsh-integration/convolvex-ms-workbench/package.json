@@ -1,0 +1,61 @@
+{
+  "name": "dsh-convolvex-ms-workbench",
+  "version": "1.0.5",
+  "private": false,
+  "type": "module",
+  "description": "Convolvex-MS mass-spectrometry workbench in the DeepSeek Harness sidebar, reusing the original web UI and binding every workspace to its own .convolvex-ms data directory.",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "build.mjs",
+    "cordis.patch.yml",
+    "host",
+    "web",
+    "locale/*.json",
+    "docs",
+    "icon.svg",
+    "README.md"
+  ],
+  "engines": {
+    "dsh": ">=0.2.2-rc.2"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-conversation"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "license": "MIT",
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "mass-spectrometry",
+    "dems",
+    "convolvex"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/owenxyzhang-seseTJ/Convolvex-MS.git",
+    "directory": "dsh-integration/convolvex-ms-workbench"
+  },
+  "homepage": "https://github.com/owenxyzhang-seseTJ/Convolvex-MS/tree/main/dsh-integration/convolvex-ms-workbench",
+  "bugs": {
+    "url": "https://github.com/owenxyzhang-seseTJ/Convolvex-MS/issues"
+  }
+}
