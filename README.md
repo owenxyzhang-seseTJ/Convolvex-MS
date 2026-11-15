@@ -55,13 +55,77 @@ DeepSeek Harness 集成见 [dsh-integration/README.md](dsh-integration/README.md
 - `dsh-integration/convolvex-ms-workbench` 是左侧栏可视化工作台插件，npm 包名为 `dsh-convolvex-ms-workbench`，直接复用本项目的原 Web 前端，并按 DSH 工作区隔离 `.convolvex-ms` 数据；
 - `dsh-integration/convolvex-ms-mcp` 是配置型 DSH bundle，以 stdio 方式启动本项目的 MCP 服务，把 15 个 `ms_*` 工具注册为 `mcp__convolvex-ms__*`，使用独立工作区 `runtime/ms-stdio`。
 
-安装工作台插件（需要本机先安装本项目的 Python 依赖）：
+## 在 DeepSeek Harness (DSH) 中部署
+
+### 1. 先部署 Python 后端
+
+按上面的平台步骤创建 `.venv` 并安装依赖。工作台插件会按需启动后端的 Web 服务，不需要先运行 `scripts/local_services.py start`。
+
+### 2. 安装左侧栏插件
+
+**方式 A：从本仓库本地 bundle 安装（推荐，和本仓库源码一致）**
+
+打开 DSH **设置 → 插件 → 添加插件**，选择本仓库的
+`dsh-integration/convolvex-ms-workbench` 目录。也可以在终端执行：
+
+```bash
+dsh plugin --profile desktop add "/absolute/path/to/Convolvex-MS/dsh-integration/convolvex-ms-workbench"
+```
+
+**方式 B：从 npm 安装发布版**
 
 ```bash
 dsh plugin --profile desktop add dsh-convolvex-ms-workbench
 ```
 
-首次使用在插件配置中将 `appRoot` 指向本仓库检出目录（默认从仓库内 `dsh-integration` 运行时自动推导）。
+npm 发布版的版本可能落后于本仓库源码；需要使用最新动效和跨平台 `appRoot` 解析时，优先使用方式 A。
+
+### 3. 配置 appRoot
+
+插件默认从自身目录上两级寻找 `pyproject.toml` 和 `src/convolvex`。如果插件安装目录不在本仓库的 `dsh-integration` 下，在 DSH 的插件行配置（或 profile 的 `cordis.patch.yml`）中设置：
+
+```yaml
+- id: convolvex-ms-workbench
+  name: dsh-convolvex-ms-workbench
+  config:
+    appRoot: /absolute/path/to/Convolvex-MS
+```
+
+Windows 原生后端：
+
+```yaml
+- id: convolvex-ms-workbench
+  name: dsh-convolvex-ms-workbench
+  config:
+    appRoot: C:\path\to\Convolvex-MS
+    python: C:\path\to\Convolvex-MS\.venv\Scripts\python.exe
+```
+
+WSL/Linux 后端：
+
+```yaml
+- id: convolvex-ms-workbench
+  name: dsh-convolvex-ms-workbench
+  config:
+    appRoot: /path/to/Convolvex-MS
+    python: /path/to/Convolvex-MS/.venv/bin/python
+```
+
+`python` 可省略：Windows 默认 `.venv\Scripts\python.exe`，WSL/Linux 默认 `.venv/bin/python`。也可以用环境变量 `CONVOLVEX_MS_ROOT` 指向仓库根目录。
+
+### 4. 打开工作台
+
+重启或刷新 DSH 后，点击左侧栏 **Convolvex-MS 质谱工作台**，在顶部选择 DSH 工作区。插件会在该工作区下创建 `.convolvex-ms/` 并自动启动 Python 服务。
+
+### 5. Windows / WSL 要点
+
+- **Windows 原生 DSH**：先执行 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deploy_windows.ps1`，再安装插件；插件默认使用 `.venv\Scripts\python.exe`。
+- **WSL2 中的 DSH**：先执行 `bash scripts/deploy_wsl.sh --cuda`（无 CUDA 可省略 `--cuda`），再安装插件；插件默认使用 `.venv/bin/python`。
+- 两套环境都不要把后端端口暴露到公网；插件只通过 DSH Host 的本地 RPC 访问 Python 服务。
+
+### 6. 可选：MCP 工具连接
+
+`dsh-integration/convolvex-ms-mcp` 是独立的 MCP bundle，不是工作台必需项。它按 `cordis.patch.yml` 中的绝对路径启动 `convolvex.mcp_server`；Windows 使用 `.venv\Scripts\python.exe`，WSL 使用 `.venv/bin/python`，并保持 `runtime/ms-stdio` 工作区独立。
 
 Web 工作台现可直接导入 DEMS CSV / Excel / JSON，按候选响应做谱分离或谱–时间联合反演，并从标准图谱库按需调取 NIST WebBook 的公开 EI 谱。图谱库分为 CO₂RR、NORR、碳氮耦合、同位素示踪和常见催化，覆盖尿素、酰胺、胺类、乙腈等耦合产物；不公开的同位素谱不会用母体平移谱替代，可另行导入本地参考谱。
 

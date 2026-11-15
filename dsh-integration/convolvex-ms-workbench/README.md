@@ -11,16 +11,35 @@
 - 如果插件不在仓库的 `dsh-integration` 目录下，设置插件行 `appRoot` 或环境变量
   `CONVOLVEX_MS_ROOT` 指向仓库根目录；插件不会修改全局 Python、PATH 或 CUDA 驱动。
 
-## 安装
+## 在 DSH 中安装
 
-npm 包：`dsh-convolvex-ms-workbench`（公开包）。在 DSH 中安装：
+**方式 A：本地 bundle（推荐，和本仓库源码一致）**
+
+打开 DSH **设置 → 插件 → 添加插件**，选择本目录
+`dsh-integration/convolvex-ms-workbench`；或在终端执行：
+
+```bash
+dsh plugin --profile desktop add "/absolute/path/to/Convolvex-MS/dsh-integration/convolvex-ms-workbench"
+```
+
+**方式 B：npm 发布版**
 
 ```bash
 dsh plugin --profile desktop add dsh-convolvex-ms-workbench
 ```
 
-安装后把插件行配置中的 `appRoot` 指向 Convolvex-MS 仓库检出目录；从本仓库内的
-`dsh-integration` 目录运行时则无需配置。插件不会自动安装 Python 依赖。
+安装后如果插件不在本仓库的 `dsh-integration` 下，在插件行配置中设置
+`appRoot` 指向仓库根目录（也可用环境变量 `CONVOLVEX_MS_ROOT`）：
+
+```yaml
+- id: convolvex-ms-workbench
+  name: dsh-convolvex-ms-workbench
+  config:
+    appRoot: /path/to/Convolvex-MS
+```
+
+Windows 自动使用 `.venv\Scripts\python.exe`，WSL/Linux 自动使用
+`.venv/bin/python`；插件不会自动安装 Python 依赖。
 
 ## 工作区绑定
 
