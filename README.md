@@ -57,6 +57,8 @@ DeepSeek Harness 集成见 [dsh-integration/README.md](dsh-integration/README.md
 
 ## 在 DeepSeek Harness (DSH) 中部署
 
+要求 DSH `>=0.2.2-rc.2`（插件包 `engines.dsh` 声明）。
+
 ### 1. 先部署 Python 后端
 
 按上面的平台步骤创建 `.venv` 并安装依赖。工作台插件会按需启动后端的 Web 服务，不需要先运行 `scripts/local_services.py start`。
