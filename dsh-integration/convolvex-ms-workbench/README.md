@@ -43,6 +43,22 @@ dsh plugin --profile desktop add dsh-convolvex-ms-workbench
 Windows 自动使用 `.venv\Scripts\python.exe`，WSL/Linux 自动使用
 `.venv/bin/python`；插件不会自动安装 Python 依赖。
 
+## 后端启动与排错
+
+插件按需启动 `python -m convolvex.cli serve`，不需要手动开服务。手动验证同一命令：
+
+```bash
+.venv/bin/python -m convolvex.cli serve --host 127.0.0.1 --port 8899 --data-dir /tmp/cvx-test
+curl -s http://127.0.0.1:8899/api/v1/health
+```
+
+**不要放在 iCloud 同步目录（`~/Desktop`、`~/Documents`）。** macOS「桌面与文稿」同步会把
+文件驱逐成 dataless，读取报 `Errno 60 Operation timed out`，`import scipy` 可能卡 40–100 秒，
+插件启动随即超时。用 `ls -lO 文件` 看到 `dataless` 即可确认；把仓库移到 `~/Convolvex-MS`
+并重建 `.venv` 即可恢复（冷启动首次数十秒属正常，之后约 1 秒）。
+
+启动超时为 120 秒；超时提示会附带 stderr 尾部，便于定位依赖或权限问题。
+
 ## 工作区绑定
 
 - 面板顶部的工作区选择器列出 DSH 已注册工作区。

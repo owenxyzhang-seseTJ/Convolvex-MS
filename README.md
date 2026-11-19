@@ -115,6 +115,39 @@ WSL/Linux 后端：
 
 `python` 可省略：Windows 默认 `.venv\Scripts\python.exe`，WSL/Linux 默认 `.venv/bin/python`。也可以用环境变量 `CONVOLVEX_MS_ROOT` 指向仓库根目录。
 
+### 3.5 手动启动与排错
+
+插件会自行启动 Python 服务，一般不需要手动启动。排查时可以手动运行同一命令：
+
+```bash
+# macOS / Linux / WSL
+.venv/bin/python -m convolvex.cli serve --host 127.0.0.1 --port 8899 --data-dir /tmp/cvx-test
+# Windows
+.venv\Scripts\python.exe -m convolvex.cli serve --host 127.0.0.1 --port 8899 --data-dir %TEMP%\cvx-test
+```
+
+另开终端验证：
+
+```bash
+curl -s http://127.0.0.1:8899/api/v1/health
+# {"status":"ok","version":"1.1.0"}
+```
+
+**不要把仓库或虚拟环境放在 iCloud 同步目录（`~/Desktop`、`~/Documents`）下。** macOS 的
+「桌面与文稿」同步会把长期未用的文件驱逐成 dataless，读取时报
+`Errno 60 Operation timed out`，表现为 `import scipy` 卡住数十秒、插件启动超时。
+若已出现该症状：把仓库移到 `~/Convolvex-MS` 这类非同步目录，重建 `.venv`，再把插件
+`appRoot` 指向新路径。用 `ls -lO <文件>` 看到 `dataless` 标记即可确认。
+
+常见启动失败：
+
+| 现象 | 原因 | 处理 |
+|---|---|---|
+| 面板提示「无法启动 Python 服务」 | `appRoot`/`python` 不对，或 `.venv` 未安装 | 检查 `appRoot`，重跑依赖安装 |
+| 启动 30–120 秒后超时 | 仓库在 iCloud 目录，文件被驱逐 | 移到 `~` 下重建 venv |
+| 服务启动后立即退出 | 端口被占用、工作区被另一进程锁定 | 换端口；一个工作区只允许一个服务 |
+| 面板一直转圈 | 后端启动中或首次冷启动较慢 | 看插件日志，或手动执行上面的命令 |
+
 ### 4. 打开工作台
 
 重启或刷新 DSH 后，点击左侧栏 **Convolvex-MS 质谱工作台**，在顶部选择 DSH 工作区。插件会在该工作区下创建 `.convolvex-ms/` 并自动启动 Python 服务。

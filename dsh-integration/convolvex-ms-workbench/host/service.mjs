@@ -19,10 +19,13 @@ import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 
 const DATA_DIR = '.convolvex-ms';
-const START_TIMEOUT_MS = 45_000;
+const START_TIMEOUT_MS = 120_000;
 const REQUEST_TIMEOUT_MS = 180_000;
 const MAX_BODY_BYTES = 32 * 1024 * 1024;
 const STDERR_LIMIT = 16_000;
+const HINT = '\n请检查：1) appRoot/python 是否正确；2) 仓库是否位于 iCloud 同步目录（如 ~/Desktop），'
+  + '被驱逐的文件读取会报 Errno 60 Operation timed out，请把仓库放到 ~ 等非同步目录；'
+  + '3) 先手动运行 `python -m convolvex.cli serve` 查看错误。';
 
 const fail = (code, message, status) => Object.assign(new Error(message), { code, status });
 
@@ -223,7 +226,7 @@ export function createWorkbenchHost({ ctx, config = {}, packageDir } = {}) {
           windowsHide: true,
         });
       } catch (error) {
-        throw fail('PYTHON_NOT_FOUND', '无法启动 Convolvex Python 服务：' + error.message + '\n请检查插件配置中的 python 或 appRoot。');
+        throw fail('PYTHON_NOT_FOUND', '无法启动 Convolvex Python 服务：' + error.message + HINT);
       }
       entry.child = child;
       child.stderr.on('data', (chunk) => {
@@ -242,8 +245,7 @@ export function createWorkbenchHost({ ctx, config = {}, packageDir } = {}) {
       let lastError = null;
       while (Date.now() < deadline) {
         if (entry.spawnError) {
-          throw fail('PYTHON_NOT_FOUND', '无法启动 Convolvex Python 服务：' + entry.spawnError.message
-            + '\n请检查插件配置中的 python 或 appRoot。');
+          throw fail('PYTHON_NOT_FOUND', '无法启动 Convolvex Python 服务：' + entry.spawnError.message + HINT);
         }
         if (child.exitCode !== null) {
           throw fail('SERVICE_EXITED', 'Convolvex 服务启动后立即退出（code ' + child.exitCode + '）：\n' + entry.stderr.slice(-4000));
@@ -261,7 +263,7 @@ export function createWorkbenchHost({ ctx, config = {}, packageDir } = {}) {
       }
       await stopEntry(entry);
       throw fail('SERVICE_TIMEOUT', 'Convolvex 服务在 ' + Math.round(START_TIMEOUT_MS / 1000) + ' 秒内未就绪（'
-        + String(lastError || 'timeout') + '）：\n' + entry.stderr.slice(-4000));
+        + String(lastError || 'timeout') + '）：\n' + entry.stderr.slice(-4000) + HINT);
     })();
 
     servers.set(key, entry);
